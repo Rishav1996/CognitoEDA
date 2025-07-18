@@ -1,0 +1,16 @@
+# Install langchain and related packages
+langchain[google-genai]
+langchain-experimental
+langchain-core
+langgraph
+langgraph-cli[inmem]
+
+# Install additional libraries for Google GenAI and Taipy
+google-genai
+taipy
+python-dotenv
+pytest
+mlflow
+plotly
+seaborn
+altair
