@@ -55,7 +55,7 @@ CognitoEDA/
 
 2. **Run the workflow:**  
    ```bash
-   python src/graph.py
+   uv run src/graph.py
    ```
 
 3. **View the results:**  
