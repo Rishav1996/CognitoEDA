@@ -29,9 +29,10 @@ CognitoEDA/
 │       ├── agents.py      # Agent definitions and orchestration
 │       ├── prompt.py      # Prompt templates for LLMs
 │       ├── schema.py      # Pydantic schemas and output parsers
-│       └── tools.py       # (Custom tools, if any)
+│       └── tools.py       # Custom tools for agents
 │
-├── requirements.txt       # Python dependencies
+├── requirements.txt       # Python dependencies (pip)
+├── pyproject.toml         # Project metadata and dependencies (PEP 621)
 └── README.md              # Project documentation
 ```
 
@@ -53,20 +54,30 @@ CognitoEDA/
 1. **Prepare your data:**  
    Place your CSV file in the `data/` directory as `temp.csv`.
 
-2. **Run the workflow:**  
+2. **Create a virtual environment:**  
+   ```bash
+   uv venv
+   ```
+
+3. **Install dependencies:**  
+   ```bash
+   uv add -r requirements.txt
+   ```
+
+4. **Run the workflow:**  
    ```bash
    uv run src/graph.py
    ```
 
-3. **View the results:**  
+5. **View the results:**  
    The generated EDA report will be saved as `data/metadata.txt`.
 
 ---
 
 ## Requirements
 
-- Python 3.10+
-- See [`requirements.txt`](requirements.txt) for all dependencies.
+- Python 3.11+
+- All dependencies are listed in [`requirements.txt`](requirements.txt) and [`pyproject.toml`](pyproject.toml).
 
 ---
 
@@ -77,6 +88,12 @@ CognitoEDA/
 - [Google Gemini (via LangChain)](https://python.langchain.com/docs/integrations/chat/google_genai)
 - [Pandas](https://pandas.pydata.org/)
 - [Pydantic](https://docs.pydantic.dev/)
+- [MLflow](https://mlflow.org/)
+- [pytest](https://docs.pytest.org/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [arxiv](https://pypi.org/project/arxiv/)
+- [duckduckgo-search](https://pypi.org/project/duckduckgo-search/)
+- [taipy](https://docs.taipy.io/en/latest/)
 
 ---
 
@@ -94,6 +111,8 @@ The Pandas agent executes code in a Python REPL. **Ensure your environment is se
   Update `src/utils/schema.py` to adjust output formats.
 - **Agents:**  
   Extend or modify agent logic in `src/utils/agents.py`.
+- **Tools:**  
+  Add or modify agent tools in `src/utils/tools.py`.
 
 ---
 
