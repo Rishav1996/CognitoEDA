@@ -1,4 +1,5 @@
 from utils.prompt import *
+from utils.tools import *
 from langgraph.prebuilt import create_react_agent
 from langchain.chat_models import init_chat_model
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
@@ -14,9 +15,10 @@ def agent_metadata_extractor(message) -> MetadataExtractorOutputFormatSchema:
     """Create a React agent for metadata extraction."""
     agent = create_react_agent(
         model=MODEL_GEMINI,
-        tools=[],
+        tools=metadata_extractor_tools,
         prompt=METADATA_EXTRACTOR_PROMPT.format(
-            output_format=metadata_parser.get_format_instructions()
+            output_format=metadata_parser.get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in metadata_extractor_tools)
         )
     )
     content = agent.invoke(

@@ -2,8 +2,6 @@ import logging
 from dotenv import load_dotenv
 import time
 import pandas as pd
-from utils.agents import *
-
 
 # Configure logging
 logging.basicConfig(
@@ -12,6 +10,8 @@ logging.basicConfig(
 )
 
 load_dotenv()
+
+from utils.agents import *
 
 df = pd.read_csv("./data/temp.csv")  # Load your DataFrame here
 

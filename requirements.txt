@@ -1,20 +1,33 @@
-# Install langchain and related packages
+# Core LangChain and LangGraph dependencies
 langchain[google-genai]
 langchain-experimental
 langchain-core
 langgraph
 langgraph-cli[inmem]
 
-# Install additional libraries for Google GenAI and Taipy
+# Google GenAI integration
 google-genai
-taipy
-python-dotenv
-pytest
-mlflow
-plotly
-seaborn
-altair
-tabulate
+
+# Data science and visualization
+pandas
+numpy
+scikit-learn
 scipy
 statsmodels
-scikit-learn
+seaborn
+plotly
+altair
+tabulate
+
+# Experiment tracking and workflow
+mlflow
+
+# Environment and testing
+python-dotenv
+pytest
+
+# Information retrieval
+arxiv
+duckduckgo-search
+
+# UI and workflow tools

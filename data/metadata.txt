@@ -1,159 +1,101 @@
-# DataFrame Inspection: Common Operations and Outputs
+### Dataset Analysis Report
 
-This document outlines various common operations performed on a Pandas DataFrame for initial data inspection, along with their respective outputs.
-
----
-
-## 1. Retrieve DataFrame Dimensions
-
-**Query:** Retrieve the number of rows and columns in the DataFrame using `df.shape`.
-
-**Answer:**
-```
-(303, 15)
-```
+This report summarizes the key characteristics and findings from the dataset analysis.
 
 ---
 
-## 2. List All Column Names
+**1. Identify all column names in the dataset.**
+*   **Answer:** The column names in the dataset are: 'Unnamed: 0', 'Age', 'Sex', 'ChestPain', 'RestBP', 'Chol', 'Fbs', 'RestECG', 'MaxHR', 'ExAng', 'Oldpeak', 'Slope', 'Ca', 'Thal', 'AHD'.
 
-**Query:** List all column names in the DataFrame using `df.columns`.
+**2. Determine the data type of each column (e.g., int64, float64, object).**
+*   **Answer:** The data types of the columns are as follows:
+    *   Unnamed: 0: int64
+    *   Age: int64
+    *   Sex: int64
+    *   ChestPain: object
+    *   RestBP: int64
+    *   Chol: int64
+    *   Fbs: int64
+    *   RestECG: int64
+    *   MaxHR: int64
+    *   ExAng: int64
+    *   Oldpeak: float64
+    *   Slope: int64
+    *   Ca: float64
+    *   Thal: object
+    *   AHD: object
 
-**Answer:**
-```
-['Unnamed: 0', 'Age', 'Sex', 'ChestPain', 'RestBP', 'Chol', 'Fbs', 'RestECG', 'MaxHR', 'ExAng', 'Oldpeak', 'Slope', 'Ca', 'Thal', 'AHD']
-```
+**3. Calculate the total number of rows and columns in the dataset.**
+*   **Answer:** The dataset has 303 rows and 15 columns.
 
----
+**4. Count the number of missing values for each column.**
+*   **Answer:** The number of missing values for each column are:
+    *   Unnamed: 0: 0
+    *   Age: 0
+    *   Sex: 0
+    *   ChestPain: 0
+    *   RestBP: 0
+    *   Chol: 0
+    *   Fbs: 0
+    *   RestECG: 0
+    *   MaxHR: 0
+    *   ExAng: 0
+    *   Oldpeak: 0
+    *   Slope: 0
+    *   Ca: 4
+    *   Thal: 2
+    *   AHD: 0
 
-## 3. Obtain Concise DataFrame Summary
+**5. Calculate the percentage of missing values for each column.**
+*   **Answer:** The percentage of missing values for each column is as follows:
+    *   Unnamed: 0: 0.00%
+    *   Age: 0.00%
+    *   Sex: 0.00%
+    *   ChestPain: 0.00%
+    *   RestBP: 0.00%
+    *   Chol: 0.00%
+    *   Fbs: 0.00%
+    *   RestECG: 0.00%
+    *   MaxHR: 0.00%
+    *   ExAng: 0.00%
+    *   Oldpeak: 0.00%
+    *   Slope: 0.00%
+    *   Ca: 1.32%
+    *   Thal: 0.66%
+    *   AHD: 0.00%
 
-**Query:** Obtain a concise summary of the DataFrame, including data types, non-null values, and memory usage for all columns using `df.info(verbose=True, show_counts=True)`.
+**6. Identify the number of unique values for each column.**
+*   **Answer:** The number of unique values for each column is as follows:
+    *   Unnamed: 0: 303
+    *   Age: 41
+    *   Sex: 2
+    *   ChestPain: 4
+    *   RestBP: 50
+    *   Chol: 152
+    *   Fbs: 2
+    *   RestECG: 3
+    *   MaxHR: 91
+    *   ExAng: 2
+    *   Oldpeak: 40
+    *   Slope: 3
+    *   Ca: 4
+    *   Thal: 3
+    *   AHD: 2
 
-**Answer:**
-The `df.info(verbose=True, show_counts=True)` output provides the concise summary of the DataFrame, including data types, non-null values, and memory usage for all columns:
+**7. List all unique values for categorical columns.**
+*   **Answer:** The unique values for the categorical columns are:
+    *   **ChestPain**: ['typical', 'asymptomatic', 'nonanginal', 'nontypical']
+    *   **Thal**: ['fixed', 'normal', 'reversable', nan]
+    *   **AHD**: ['No', 'Yes']
 
-```
-<class 'pandas.core.frame.DataFrame'>
-RangeIndex: 303 entries, 0 to 302
-Data columns (total 15 columns):
- #   Column      Non-Null Count  Dtype  
----  ------      --------------  -----  
- 0   Unnamed: 0  303 non-null    int64  
- 1   Age         303 non-null    int64  
- 2   Sex         303 non-null    int64  
- 3   ChestPain   303 non-null    object 
- 4   RestBP      303 non-null    int64  
- 5   Chol        303 non-null    int64  
- 6   Fbs         303 non-null    int64  
- 7   RestECG     303 non-null    int64  
- 8   MaxHR       303 non-null    int64  
- 9   ExAng       303 non-null    int64  
- 10  Oldpeak     303 non-null    float64
- 11  Slope       303 non-null    int64  
- 12  Ca          299 non-null    float64
- 13  Thal        301 non-null    object 
- 14  AHD         303 non-null    object 
-dtypes: float64(2), int64(10), object(3)
-memory usage: 35.6+ KB
-```
+**8. Determine the value counts for the target column 'AHD' to understand class distribution.**
+*   **Answer:** The value counts for the 'AHD' column are: No: 164, Yes: 139.
 
----
+**9. Identify columns that are numerical (e.g., int, float).**
+*   **Answer:** Unnamed: 0, Age, Sex, RestBP, Chol, Fbs, RestECG, MaxHR, ExAng, Oldpeak, Slope, Ca
 
-## 4. Get Column Data Types
+**10. Identify columns that are categorical (e.g., object, or numerical with low cardinality).**
+*   **Answer:** ['Sex', 'ChestPain', 'Fbs', 'RestECG', 'ExAng', 'Slope', 'Ca', 'Thal', 'AHD']
 
-**Query:** Get the data type of each column in the DataFrame using `df.dtypes`.
-
-**Answer:**
-```
-Unnamed: 0      int64
-Age             int64
-Sex             int64
-ChestPain      object
-RestBP          int64
-Chol            int64
-Fbs             int64
-RestECG         int64
-MaxHR           int64
-ExAng           int64
-Oldpeak       float64
-Slope           int64
-Ca            float64
-Thal           object
-AHD            object
-dtype: object
-```
-
----
-
-## 5. Calculate Missing Values Sum
-
-**Query:** Calculate the sum of missing values for each column using `df.isnull().sum()`.
-
-**Answer:**
-```
-Unnamed: 0    0
-Age           0
-Sex           0
-ChestPain     0
-RestBP        0
-Chol          0
-Fbs           0
-RestECG       0
-MaxHR         0
-ExAng         0
-Oldpeak       0
-Slope         0
-Ca            4
-Thal          2
-AHD           0
-dtype: int64
-```
-
----
-
-## 6. Determine Unique Values Count per Column
-
-**Query:** Determine the number of unique values for each column using `df.nunique()`.
-
-**Answer:**
-```
-Unnamed: 0    303
-Age            41
-Sex             2
-ChestPain       4
-RestBP         50
-Chol          152
-Fbs             2
-RestECG         3
-MaxHR          91
-ExAng           2
-Oldpeak        40
-Slope           3
-Ca              4
-Thal            3
-AHD             2
-dtype: int64
-```
-
----
-
-## 7. Identify Unique Values in 'AHD' Column
-
-**Query:** Identify the unique values present in the target column 'AHD' using `df['AHD'].unique()`.
-
-**Answer:**
-```
-['No' 'Yes']
-```
-
----
-
-## 8. Retrieve Data Type of 'AHD' Column
-
-**Query:** Retrieve the data type of the target column 'AHD' using `df['AHD'].dtype`.
-
-**Answer:**
-```
-object
-```
+**11. Check for the presence of any duplicate rows in the dataset.**
+*   **Answer:** There are no duplicate rows in the dataset.

@@ -6,6 +6,7 @@ METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     template=(
         "ROLE : You are an experienced Data Scientist\n"
         "INSTRUCTIONS : Your objective is to create steps for extracting various types of data information about the data provided. "
+        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
         "Only consider metadata information. Assuming you're performing pandas operations\n"
         "EXCLUDE : Any visualization, statistical analysis, loading of data\n"
         "OUTPUT FORMAT : {output_format}"
