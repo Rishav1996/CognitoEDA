@@ -1,11 +1,23 @@
-from utils.schema import MetadataExtractorOutputFormatSchema
+from utils.schema import *
+from langchain_core.prompts import PromptTemplate
 
-from langchain_core.output_parsers import PydanticOutputParser
+METADATA_EXTRACTOR_PROMPT = PromptTemplate(
+    input_variables=["output_format"],
+    template=(
+        "ROLE : You are an experienced Data Scientist\n"
+        "INSTRUCTIONS : Your objective is to create steps for extracting various types of data information about the data provided. "
+        "Only consider metadata information. Assuming you're performing pandas operations\n"
+        "EXCLUDE : Any visualization, statistical analysis, loading of data\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
 
-
-metadata_parser = PydanticOutputParser(pydantic_object=MetadataExtractorOutputFormatSchema)
-
-METADATA_EXTRACTOR_PROMPT = f""""ROLE : You are an experienced Data Scientist
-INSTRUCTIONS : Your objective is to create steps for extracting various types of data information about the data provided. Only consider metadata information. Assuming your performing pandas operations
-EXCLUDE : Any visualization, statistical analysis, loading of data
-OUTPUT FORMAT : {metadata_parser.get_format_instructions()}"""
+STRUCTURED_FILE_PROMPT = PromptTemplate(
+    input_variables=["content", "output_format"],
+    template=(
+        "ROLE : You are an experienced Software developer, that generates humanly readable documents\n"
+        "INSTRUCTIONS : Your objective is to create a structured file format from the dictionary provided.\n"
+        "CONTENT : {content}\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)

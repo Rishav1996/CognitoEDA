@@ -14,3 +14,7 @@ mlflow
 plotly
 seaborn
 altair
+tabulate
+scipy
+statsmodels
+scikit-learn
