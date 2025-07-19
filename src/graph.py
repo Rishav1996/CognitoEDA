@@ -25,12 +25,18 @@ logging.info("Starting metadata extraction...")
 # Define the target column and use case type for EDA
 target_column = "AHD"
 type_of_use_case = "classification"
+n_steps = 5
 
 # Create the initial prompt for metadata extraction
-prompt = (
-    f"Perform all EDA steps keeping target column as '{target_column}' "
-    f"and this is a {type_of_use_case} use case"
-)
+if target_column != None:
+    prompt = (
+        f"Create {n_steps} steps for the EDA consider target column as '{target_column}' "
+        f"and this is a {type_of_use_case} use case"
+    )
+else:
+    prompt = (
+        f"Create {n_steps} steps for the EDA and this is a {type_of_use_case} use case"
+    )
 
 # Extract metadata using the agent
 json_message = agent_metadata_extractor(prompt)

@@ -1,6 +1,7 @@
 from utils.prompt import *
 from utils.tools import *
-from utils.helper import get_model
+from langchain_core.runnables import RunnableConfig
+from utils.helper import get_model, AgentState
 
 
 from langgraph.prebuilt import create_react_agent
@@ -14,11 +15,12 @@ import logging
 AGENT_RETRY_SLEEP_SECONDS = 20
 MODEL_GEMINI = get_model()
 
-def agent_metadata_extractor(message, retry_method=10) -> MetadataExtractorOutputFormatSchema:
+def agent_metadata_extractor(state: AgentState, config: RunnableConfig) -> MetadataExtractorOutputFormatSchema:
     """
     Create a React agent for metadata extraction.
     Retries parsing up to `retry_method` times, sleeping between retries.
     """
+    task = state.task
     agent = create_react_agent(
         model=MODEL_GEMINI,
         tools=common_tools,
@@ -28,7 +30,7 @@ def agent_metadata_extractor(message, retry_method=10) -> MetadataExtractorOutpu
         )
     )
     content = agent.invoke(
-        {"messages": [{"role": "user", "content": message}]}
+        {"messages": [{"role": "user", "content": task}]}
     )['messages'][-1].content
     while retry_method > 0:
         try:
@@ -39,9 +41,10 @@ def agent_metadata_extractor(message, retry_method=10) -> MetadataExtractorOutpu
             retry_method -= 1
             time.sleep(AGENT_RETRY_SLEEP_SECONDS)
             content = agent.invoke(
-                {"messages": [{"role": "user", "content": message}]}
+                {"messages": [{"role": "user", "content": task}]}
             )['messages'][-1].content
-    return content
+    state = AgentState(task=content, **state)
+    return state
 
 
 def agent_pandas_dataframe_extractor(df, message, retry_method=10):
