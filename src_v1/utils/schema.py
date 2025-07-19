@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
-from utils.helper import WorkflowStage
+
 
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
@@ -65,42 +65,27 @@ class HTMLInsightOutputFormatSchema(BaseModel):
         description="The HTML content of the insights generated. Add visuals and charts as needed."
     )
 
-
 """Parser for the Metadata Extractor Agent's output."""
 metadata_parser = PydanticOutputParser(
     pydantic_object=MetadataExtractorOutputFormatSchema,
 )
-
 """Parser for the Structured File Generator Agent's output."""
 structured_file_parser = PydanticOutputParser(
     pydantic_object=StructuredFileOutputFormatSchema
 )
-
 """Parser for the Statistics Extractor Agent's output."""
 statistics_parser = PydanticOutputParser(
     pydantic_object=StatisticsExtractorOutputFormatSchema
 )
-
 """Parser for the Python REPL Agent's output."""
 python_repl_parser = PydanticOutputParser(
     pydantic_object=PythonREPLOutputFormatSchema
 )
-
 """Parser for the Business Analytics Agent's output."""
 business_analytics_parser = PydanticOutputParser(
     pydantic_object=BusinessAnalyticsOutputFormatSchema
 )
-
 """Parser for the HTML Insight Generator Agent's output."""
 html_insight_parser = PydanticOutputParser(
     pydantic_object=HTMLInsightOutputFormatSchema
 )
-
-
-PARSER_MAPPER = {
-    WorkflowStage.METADATA_EXTRACTOR_AGENT: metadata_parser,
-    WorkflowStage.STRUCTURE_CREATOR_AGENT: structured_file_parser,
-    WorkflowStage.STATISTICS_GENERATOR_AGENT: statistics_parser,
-    WorkflowStage.BUSINESS_INSIGHTS_AGENT: business_analytics_parser,
-    WorkflowStage.WEB_DEVELOPER_AGENT: html_insight_parser
-}

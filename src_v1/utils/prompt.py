@@ -1,5 +1,4 @@
 from utils.schema import *
-from utils.helper import WorkflowStage
 from langchain_core.prompts import PromptTemplate
 
 """Prompt for the Metadata Extractor Agent."""
@@ -86,12 +85,3 @@ HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
         "OUTPUT FORMAT : {output_format}"
     ),
 )
-
-
-PROMPT_MAPPER = {
-    WorkflowStage.METADATA_EXTRACTOR_AGENT: METADATA_EXTRACTOR_PROMPT,
-    WorkflowStage.STRUCTURE_CREATOR_AGENT: STRUCTURED_FILE_PROMPT,
-    WorkflowStage.STATISTICS_GENERATOR_AGENT: STATISTICS_EXTRACTOR_PROMPT,
-    WorkflowStage.BUSINESS_INSIGHTS_AGENT: BUSINESS_ANALYTICS_PROMPT,
-    WorkflowStage.WEB_DEVELOPER_AGENT: HTML_INSIGHT_GENERATOR_PROMPT
-}

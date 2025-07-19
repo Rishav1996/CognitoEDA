@@ -1,101 +1,36 @@
-import logging
-import os
 from dotenv import load_dotenv
-import time
-import pandas as pd
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
 
 load_dotenv()
 
-from utils.agents import *
+from langgraph.graph import StateGraph
+from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.memory import MemorySaver
+from utils.helper import AgentState, ConfigSchema
+from utils.agents import llm_agent, pandas_agent, python_agent
 
-# Sleep duration (in seconds) between agent calls
-AGENT_SLEEP_SECONDS = 20
+graph = StateGraph(AgentState, config_schema=ConfigSchema)
 
-# Load the main DataFrame from CSV
-df = pd.read_csv("./data/temp.csv")  # Load your DataFrame here
 
-logging.info("Starting metadata extraction...")
+graph.add_node("Metadata Extractor Agent", llm_agent)
+graph.add_node("Pandas Agent", pandas_agent)
+graph.add_node("Structured Generator Agent", llm_agent)
+graph.add_node("Statistician Agent", llm_agent)
+graph.add_node("Python Coder Agent", python_agent)
+graph.add_node("Business Insight Agent", llm_agent)
+graph.add_node("Web Developer Agent", llm_agent)
 
-# Define the target column and use case type for EDA
-target_column = "AHD"
-type_of_use_case = "classification"
-n_steps = 5
+graph.add_edge("Metadata Extractor Agent", "Pandas Agent")
+graph.add_edge("Pandas Agent", "Structured Generator Agent")
+graph.add_edge("Structured Generator Agent", "Statistician Agent")
+graph.add_edge("Statistician Agent", "Python Coder Agent")
+graph.add_edge("Python Coder Agent", "Business Insight Agent")
+graph.add_edge("Business Insight Agent", "Web Developer Agent")
 
-# Create the initial prompt for metadata extraction
-if target_column != None:
-    prompt = (
-        f"Create {n_steps} steps for the EDA consider target column as '{target_column}' "
-        f"and this is a {type_of_use_case} use case"
-    )
-else:
-    prompt = (
-        f"Create {n_steps} steps for the EDA and this is a {type_of_use_case} use case"
-    )
+graph.set_entry_point("Metadata Extractor Agent")
+graph.set_finish_point("Web Developer Agent")
 
-# Extract metadata using the agent
-json_message = agent_metadata_extractor(prompt)
-logging.info("Metadata extraction complete.")
+graph_agent = graph.compile()
 
-time.sleep(AGENT_SLEEP_SECONDS)
+with open('./data/graph.png', 'wb') as f:
+    f.write(graph_agent.get_graph().draw_mermaid_png())
 
-# List to store question-answer pairs for EDA
-question_answer = []
-
-# Process each EDA query and collect results
-for query in json_message.output_format:
-    logging.info("Processing query")
-    output = agent_pandas_dataframe_extractor(df, query)
-    logging.info("Query processed")
-    time.sleep(AGENT_SLEEP_SECONDS)
-    question_answer.append(output)
-
-logging.info("Converting question-answer pairs to structured file format...")
-structured_file = agent_metadata_to_structured_file(question_answer)
-logging.info("Structured file created.")
-
-# Save the structured file to a text file
-with open("./data/metadata.txt", "w") as file:
-    file.write(structured_file.text)
-
-# Extract statistics using the agent
-statistics_output = agent_statistics_extractor()
-logging.info("Statistics extraction complete.")
-
-time.sleep(AGENT_SLEEP_SECONDS)
-
-# List to store question-answer pairs for statistics
-question_answer = []
-
-# Process each statistics query and collect results
-for query in statistics_output.output_format:
-    logging.info("Processing query")
-    output = agent_python_repl(df, query)
-    logging.info("Query processed")
-    time.sleep(AGENT_SLEEP_SECONDS)
-    question_answer.append(output)
-
-logging.info("Converting question-answer pairs to structured file format for statistics...")
-structured_file = agent_metadata_to_structured_file(question_answer)
-logging.info("Structured file for statistics created.")
-
-# Save the structured file for statistics to a text file
-with open("./data/statistics.txt", "w") as file:
-    file.write(structured_file.text)
-
-logging.info("Starting business insights generation...")
-business_insights = agent_business_insight_generator(df)
-logging.info("Business insights generation complete.")
-
-logging.info("Starting HTML insights generation...")
-html_insights = agent_html_insight_generator(df, business_insights)
-logging.info("HTML insights generation complete.")
-
-# Save the HTML insights to a file
-with open("./data/insights.html", "w") as file:
-    file.write(html_insights.output_format)
