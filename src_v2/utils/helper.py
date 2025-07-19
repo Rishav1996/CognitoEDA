@@ -1,10 +1,9 @@
 from enum import Enum
 from typing import Optional
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, Literal
 from langchain.chat_models import init_chat_model
 import pandas as pd
-
-from utils.helper import ModelClasses
+from langgraph.graph import END
 
 
 class ModelClasses(Enum):
@@ -34,11 +33,9 @@ class AgentState(TypedDict):
     State for the agent graph.
     """
     task: list | str
+    metadata: Optional[dict] = None
+    statistics: Optional[dict] = None
     df: pd.DataFrame
-    type_of_modelling: str
-    model_class: ModelClasses
-    target_column: Optional[str] = None
-    n_steps: int = 10
     stage: WorkflowStage
     history: list
 
@@ -59,3 +56,12 @@ def get_model(temperature: float = 1.0):
         model_provider="google_genai",
         temperature=temperature
     )
+
+STAGE_MAPPER = {
+    WorkflowStage.METADATA_EXTRACTOR_AGENT: WorkflowStage.PANDAS_AGENT,
+    WorkflowStage.PANDAS_AGENT: WorkflowStage.STRUCTURE_CREATOR_AGENT,
+    WorkflowStage.STRUCTURE_CREATOR_AGENT: WorkflowStage.STATISTICS_GENERATOR_AGENT,
+    WorkflowStage.STATISTICS_GENERATOR_AGENT: WorkflowStage.PYTHON_CODER_AGENT,
+    WorkflowStage.PYTHON_CODER_AGENT: WorkflowStage.BUSINESS_INSIGHTS_AGENT,
+    WorkflowStage.BUSINESS_INSIGHTS_AGENT: WorkflowStage.WEB_DEVELOPER_AGENT
+}
