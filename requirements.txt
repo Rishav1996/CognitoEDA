@@ -28,6 +28,7 @@ pytest
 
 # Information retrieval
 arxiv
+ddgs
 duckduckgo-search
 
 # UI and workflow tools

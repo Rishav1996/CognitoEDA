@@ -24,12 +24,15 @@ CognitoEDA/
 │
 ├── data/
 │   ├── temp.csv           # Sample dataset for EDA
-│   └── metadata.txt       # Example output of structured EDA report
+│   ├── metadata.txt       # Example output of structured EDA report
+│   ├── statistics.txt     # Example output of structured statistics report
+│   └── insights.html      # Example output of HTML insights
 │
 ├── src/
 │   ├── app.py             # (Entry point for app, if needed)
 │   ├── graph.py           # Main workflow script
 │   └── utils/
+│       ├── __init__.py
 │       ├── agents.py      # Agent definitions and orchestration
 │       ├── prompt.py      # Prompt templates for LLMs
 │       ├── schema.py      # Pydantic schemas and output parsers
@@ -50,6 +53,10 @@ CognitoEDA/
    Each suggested EDA step is executed on the DataFrame using a Pandas agent, and the results are collected.
 3. **Structured Output:**  
    The question-answer pairs are converted into a readable report using another LLM agent, following a structured template.
+4. **Statistics Extraction:**  
+   Additional statistical steps are generated and executed, with results saved in a structured format.
+5. **Business Insights & HTML Generation:**  
+   Business insights are generated from metadata/statistics, and then converted into interactive HTML reports.
 
 ---
 
@@ -74,7 +81,9 @@ CognitoEDA/
    ```
 
 5. **View the results:**  
-   The generated EDA report will be saved as `data/metadata.txt`.
+   - The generated EDA report will be saved as `data/metadata.txt`.
+   - The statistics report will be saved as `data/statistics.txt`.
+   - The HTML insights will be saved as `data/insights.html`.
 
 ---
 
