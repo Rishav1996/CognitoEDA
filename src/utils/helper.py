@@ -1,9 +1,8 @@
 from enum import Enum
 from typing import Optional
-from typing_extensions import TypedDict, Literal
+from typing_extensions import TypedDict
 from langchain.chat_models import init_chat_model
 import pandas as pd
-from langgraph.graph import END
 
 
 class ModelClasses(Enum):
@@ -33,18 +32,20 @@ class AgentState(TypedDict):
     State for the agent graph.
     """
     task: list | str
-    metadata: Optional[dict] = None
-    statistics: Optional[dict] = None
+    metadata: dict
+    statistics: dict
+    insights: dict
     df: pd.DataFrame
     stage: WorkflowStage
-    history: list = []
+    history: list
 
 class ConfigSchema(TypedDict):
     """
     Configuration for the agent graph.
     """
-    agent_retry_limit: int = 3
-    agent_sleep_seconds: int = 20
+    uuid: str
+    agent_retry_limit: int
+    agent_sleep_seconds: int
 
 
 def get_model(temperature: float = 1.0):
@@ -52,7 +53,7 @@ def get_model(temperature: float = 1.0):
     Get the model for the agent.
     """
     return init_chat_model(
-        model="models/gemini-2.5-flash",
+        model="models/gemini-2.0-flash-lite", # gemini-2.5-pro
         model_provider="google_genai",
         temperature=temperature
     )

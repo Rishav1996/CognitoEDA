@@ -6,11 +6,11 @@ from langchain_core.prompts import PromptTemplate
 METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are an experienced Data Scientist\n"
-        "INSTRUCTIONS : Your objective is to create steps for extracting various types of data information about the data provided. "
-        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
-        "Only consider metadata information. Assuming you're performing pandas operations\n"
-        "EXCLUDE : Any visualization, statistical analysis, loading of data\n"
+        "ROLE : You are a seasoned Data Analyst\n"
+        "INSTRUCTIONS : Your goal is to create small or one liner steps for pandas operations in acquiring diverse data attributes from the given dataset.\n"
+        "TOOLS : You can utilize `{tool_list}` for this assignment.\n"
+        "Focus solely on metadata. Assume you are employing pandas operations.\n"
+        "EXCLUDE : Visual representations, statistical computations, data ingestion.\n"
         "OUTPUT FORMAT : {output_format}"
     ),
 )
@@ -19,8 +19,8 @@ METADATA_EXTRACTOR_PROMPT = PromptTemplate(
 STRUCTURED_FILE_PROMPT = PromptTemplate(
     input_variables=["content", "output_format"],
     template=(
-        "ROLE : You are an experienced Software developer, that generates humanly readable documents\n"
-        "INSTRUCTIONS : Your objective is to create a structured file format from the dictionary provided.\n"
+        "ROLE : You are a seasoned Software Engineer, adept at crafting easily understandable documentation.\n"
+        "INSTRUCTIONS : Your task is to devise a structured data representation based on the given dictionary.\n"
         "CONTENT : {content}\n"
         "OUTPUT FORMAT : {output_format}"
     ),
@@ -30,13 +30,13 @@ STRUCTURED_FILE_PROMPT = PromptTemplate(
 STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are an experienced Data Scientist\n"
+        "ROLE : You are a seasoned Data Scientist\n"
         "METADATA : {metadata}\n"
-        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
-        "INSTRUCTIONS : Your objective is to create steps for extracting various types of statistical information refer the metadata provided.\n"
-        "Explore new statistical methods and techniques to analyze the data. Using the above tools mentioned\n"
-        "Only consider statistical information. Consider libraries like scipy, and statsmodels only\n"
-        "EXCLUDE : Any visualization, metadata extraction, loading of data\n"
+        "TOOLS : You can utilize {tool_list} as your resources to accomplish the objective.\n"
+        "INSTRUCTIONS : Your mission is to write quick and small analysis steps for deriving diverse statistical insights from the provided metadata.\n"
+        "Investigate novel statistical methodologies and approaches for data analysis, leveraging the aforementioned tools.\n"
+        "Focus exclusively on statistical details, specifically employing libraries such as scipy and statsmodels.\n"
+        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
         "OUTPUT FORMAT : {output_format}"
     ),
 )
@@ -45,10 +45,12 @@ STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
 PYTHON_REPL_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are an experienced Python Developer\n"
-        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
-        "INSTRUCTIONS : Your objective is to create a python function for the task given and execute python code using the tools\n"
-        "Only consider Python code execution. Assuming you're performing Python operations\n"
+        "ROLE : You function as a skilled Python Programmer\n"
+        "TOOLS : You are equipped with {tool_list} as your resources to accomplish the objective.\n"
+        "INSTRUCTIONS : Your aim is to develop a Python function for the specified task and run Python code utilizing the resources.\n"
+        "Focus solely on Python code execution. It's presumed you are carrying out Python operations.\n"
+        "EXCLUDE : Visual representations\n"
+        "DATAFRAME : {df}\n"
         "TASK : {task}\n"
         "OUTPUT FORMAT : {output_format}"
     ),
@@ -58,11 +60,11 @@ PYTHON_REPL_PROMPT = PromptTemplate(
 BUSINESS_ANALYTICS_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are an experienced Business Analyst\n"
-        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
-        "INSTRUCTIONS : Your objective is to create business insights from the metadata & statistical information provided.\n"
-        "Only consider business insights. Assuming you're performing business analysis operations.\n"
-        "Also use Python REPL tool to generate graphs from the DataFrame 'df' and statistical analysis and return bytes output using `io` library\n"
+        "ROLE : You function as a seasoned Business Strategist.\n"
+        "TOOLS : You have access to {tool_list} at your disposal to accomplish the assignment.\n"
+        "INSTRUCTIONS : Your aim is to derive strategic business revelations from the supplied metadata and quantitative data.\n"
+        "Concentrate exclusively on strategic business implications. Envision yourself executing strategic analysis procedures.\n"
+        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
         "METADATA : {metadata}\n"
         "STATISTICS : {statistics}\n"
         "OUTPUT FORMAT : {output_format}"
@@ -73,15 +75,13 @@ BUSINESS_ANALYTICS_PROMPT = PromptTemplate(
 HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are an experienced Web Developer\n"
-        "TOOLS : You have access to {tool_list} these tools to perform the task.\n"
-        "INSTRUCTIONS : Your objective is to create Web content for the business insights generated.\n"
-        "Only consider Web content generation. Assuming you're performing Web operations. Add images and beautiful charts\n"
-        "Added metadata and statistics for your reference to create interactive images and charts.\n"
-        "Also added dataframe to generate images and charts\n"
+        "ROLE : You are a seasoned Web Developer\n"
+        "TOOLS : You are equipped with {tool_list} to accomplish this task.\n"
+        "INSTRUCTIONS : Your mission is to develop Web content based on the provided business insights.\n"
+        "Focus solely on Web content creation. Envision yourself executing Web operations.\n"
+        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
         "INSIGHTS : {insights}\n"
         "METADATA : {metadata}\n"
-        "DATAFRAME : {dataframe}\n"
         "STATISTICS : {statistics}\n"
         "OUTPUT FORMAT : {output_format}"
     ),
@@ -93,5 +93,6 @@ PROMPT_MAPPER = {
     WorkflowStage.STRUCTURE_CREATOR_AGENT: STRUCTURED_FILE_PROMPT,
     WorkflowStage.STATISTICS_GENERATOR_AGENT: STATISTICS_EXTRACTOR_PROMPT,
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: BUSINESS_ANALYTICS_PROMPT,
+    WorkflowStage.PYTHON_CODER_AGENT: PYTHON_REPL_PROMPT,
     WorkflowStage.WEB_DEVELOPER_AGENT: HTML_INSIGHT_GENERATOR_PROMPT
 }

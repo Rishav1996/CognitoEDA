@@ -101,6 +101,7 @@ PARSER_MAPPER = {
     WorkflowStage.METADATA_EXTRACTOR_AGENT: metadata_parser,
     WorkflowStage.STRUCTURE_CREATOR_AGENT: structured_file_parser,
     WorkflowStage.STATISTICS_GENERATOR_AGENT: statistics_parser,
+    WorkflowStage.PYTHON_CODER_AGENT: python_repl_parser,
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: business_analytics_parser,
     WorkflowStage.WEB_DEVELOPER_AGENT: html_insight_parser
 }

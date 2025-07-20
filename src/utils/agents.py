@@ -12,6 +12,7 @@ from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe
 
 import time
 import logging
+import pandas as pd
 
 
 MODEL_GEMINI = get_model()
@@ -21,10 +22,12 @@ def get_prompt(state: AgentState):
     """
     Get the prompt for the agent based on the current state.
     """
-    task = state.task
-    stage = state.stage
-    metadata = state.metadata if state.metadata else {}
-    statistics = state.statistics if state.statistics else {}
+    task = state['task']
+    stage = state['stage']
+    metadata = state['metadata'] if state['metadata'] else {}
+    insights = state['insights'] if state['insights'] else {}
+    statistics = state['statistics'] if state['statistics'] else {}
+    df = state['df']
 
     if stage == WorkflowStage.METADATA_EXTRACTOR_AGENT:
         return PROMPT_MAPPER[stage].format(
@@ -46,7 +49,8 @@ def get_prompt(state: AgentState):
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(getattr(tool, "name", tool.__class__.__name__) for tool in common_tools),
-            task=task
+            task=task,
+            dataframe=df
         )
     elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         return PROMPT_MAPPER[stage].format(
@@ -59,130 +63,147 @@ def get_prompt(state: AgentState):
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools),
-            insights=task,
+            insights=insights,
             metadata=metadata,
-            statistics=statistics,
-            dataframe=state.df.to_json(orient="records")
+            statistics=statistics
         )
 
 
 def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     Create a React agent for metadata extraction.
-    Retries parsing up to `retry_method` times, sleeping between retries.
+    Retries parsing up to `agent_retry_limit` times, sleeping between retries.
     """
-    task_list = state.task if isinstance(state.task, list) else [state.task]
-    retry_method = config.get("retry_method", 10)
-    stage = state.stage
-    agent_retry_sleep_seconds = config.get("agent_retry_sleep_seconds", 20)
+    task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
+    stage = state['stage']
+    agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
 
-    agent = create_react_agent(
+    llm_agent_obj = create_react_agent(
         model=MODEL_GEMINI,
         tools=common_tools,
         prompt=get_prompt(state)
     )
     content_list = []
     for task in task_list:
-        content = agent.invoke(
+        agent_retry_limit = config.get('metadata').get("agent_retry_limit")
+        content = llm_agent_obj.invoke(
             {"messages": [{"role": "user", "content": task}]}
         )['messages'][-1].content
-        while retry_method > 0:
+        while agent_retry_limit > 0:
             try:
                 content = PARSER_MAPPER[stage].parse(content)
                 content = content.output_format
                 content_list.append(content)
                 break
             except Exception as e:
-                logging.warning(f"Parsing failed: {e}. Retrying after {agent_retry_sleep_seconds} seconds...")
-                retry_method -= 1
-                time.sleep(agent_retry_sleep_seconds)
-                content = agent.invoke(
+                logging.warning(f"Parsing failed: {e}. Retrying after {agent_sleep_seconds} seconds...")
+                agent_retry_limit -= 1
+                time.sleep(agent_sleep_seconds)
+                content = llm_agent_obj.invoke(
                     {"messages": [{"role": "user", "content": task}]}
                 )['messages'][-1].content
-        if retry_method == 0:
+        if agent_retry_limit == 0:
             logging.error("Failed to parse content after multiple retries.")
             raise ValueError("Failed to parse content after multiple retries.")
-    state.task = content_list[0] if len(content_list) == 1 else content_list
-    state.stage = STAGE_MAPPER[stage]
-    state.history = state.history + [{'task': task, 'stage': stage}]
+    state['task'] = content_list[0] if len(content_list) == 1 else content_list
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': content_list}]
+
+    if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+        state['metadata'] = state['task']
+    if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+        state['statistics'] = state['task']
+    if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+        state['insights'] = state['task']
     return state
 
 
 def pandas_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     Create a Pandas DataFrame agent for metadata extraction.
-    Retries parsing up to `retry_method` times, sleeping between retries.
+    Retries parsing up to `agent_retry_limit` times, sleeping between retries.
     """
-    retry_method = config.get("retry_method", 10)
-    agent_retry_sleep_seconds = config.get("agent_retry_sleep_seconds", 20)
-    df = state.df
-    task_list = [tate.task] if isinstance(state.task, str) else " ".join(state.task)
+    agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
+    df = pd.read_json(state['df'])
+    stage = state['stage']
+    task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
 
-    agent = create_pandas_dataframe_agent(
+    pandas_agent_obj = create_pandas_dataframe_agent(
         MODEL_GEMINI,
-        df,
-        allow_dangerous_code=True
+        df=df,
+        allow_dangerous_code=True,
+        agent_type="tool-calling",
+        max_iterations=3,
     )
     output_list = []
     for task in task_list:
-        while retry_method > 0:
+        agent_retry_limit = config.get('metadata').get("agent_retry_limit")
+        while agent_retry_limit > 0:
             try:
-                # If you have a parser for the output, use it here
-                # parsed_output = your_parser.parse(content['output'])
-                # return parsed_output
-                content = agent.invoke(task)
+                content = pandas_agent_obj.invoke(task)
                 output_list.append({"query": task, "answer": content['output']})
                 break
             except Exception as e:
-                logging.warning(f"Parsing failed: {e}. Retrying after {agent_retry_sleep_seconds} seconds...")
-                retry_method -= 1
-                time.sleep(agent_retry_sleep_seconds)
-                content = agent.invoke(task)
-    state.task = output_list[0] if len(output_list) == 1 else output_list
-    state.stage = STAGE_MAPPER[stage]
-    state.history = state.history + [{'task': task, 'stage': stage}]
+                logging.warning(f"Parsing failed: {e}. Retrying after {agent_sleep_seconds} seconds...")
+                agent_retry_limit -= 1
+                time.sleep(agent_sleep_seconds)
+    state['task'] = output_list[0]['answer'] if len(output_list) == 1 else [i['answer'] for i in output_list]
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': output_list}]
+    if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+        state['metadata'] = state['task']
+    if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+        state['statistics'] = state['task']
+    if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+        state['insights'] = state['task']
     return state
 
 
 def python_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     Create a React agent for Python REPL execution.
-    Retries parsing up to `retry_method` times, sleeping between retries.
+    Retries parsing up to `agent_retry_limit` times, sleeping between retries.
     """
-    task_list = state.task if isinstance(state.task, list) else [state.task]
-    retry_method = config.get("retry_method", 10)
-    stage = state.stage
-    agent_retry_sleep_seconds = config.get("agent_retry_sleep_seconds", 20)
-    df = state.df
+    task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
+    stage = state['stage']
+    agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
+    df = state['df']
 
     tools = common_tools + [get_python_repl_tool_with_df(df)]  # Use the wrapped tool
-    agent = create_react_agent(
+    python_agent_obj = create_react_agent(
         model=MODEL_GEMINI,
         tools=tools,
         prompt=get_prompt(state)
     )
     content_list = []
     for task in task_list:
-        content = agent.invoke(
+        agent_retry_limit = config.get('metadata').get("agent_retry_limit")
+        content = python_agent_obj.invoke(
             {"messages": [{"role": "user", "content": task}]}
         )['messages'][-1].content
-        while retry_method > 0:
+        while agent_retry_limit > 0:
             try:
                 content = PARSER_MAPPER[stage].parse(content)
                 content = content.output_format
                 content_list.append(content)
                 break
             except Exception as e:
-                logging.warning(f"Parsing failed: {e}. Retrying after {agent_retry_sleep_seconds} seconds...")
-                retry_method -= 1
-                time.sleep(agent_retry_sleep_seconds)
-                content = agent.invoke(
+                logging.warning(f"Parsing failed: {e}. Retrying after {agent_sleep_seconds} seconds...")
+                agent_retry_limit -= 1
+                time.sleep(agent_sleep_seconds)
+                content = python_agent_obj.invoke(
                     {"messages": [{"role": "user", "content": task}]}
                 )['messages'][-1].content
-        if retry_method == 0:
+        if agent_retry_limit == 0:
             logging.error("Failed to parse content after multiple retries.")
             raise ValueError("Failed to parse content after multiple retries.")
-    state.task = content_list[0] if len(content_list) == 1 else content_list
-    state.stage = STAGE_MAPPER[stage]
-    state.history = state.history + [{'task': task, 'stage': stage}]
+    state['task'] = content_list[0] if len(content_list) == 1 else content_list
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': content_list}]
+    if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+        state['metadata'] = state['task']
+    if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+        state['statistics'] = state['task']
+    if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+        state['insights'] = state['task']
     return state
