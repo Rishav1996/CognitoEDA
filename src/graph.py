@@ -20,10 +20,10 @@ uuid_num = str(uuid.uuid4())
 runnable_config = ConfigSchema(uuid=uuid_num, agent_retry_limit=2, agent_sleep_seconds=60)
 
 state = AgentState(
-    task= "Create 3 steps for the EDA consider target column as 'variety' and this is a 'classification' use case",
-    metadata= {},
-    statistics= {},
-    insights= {},
+    task= "Suggest all possible EDA considering the target column is `variety` and this is a `classification` use case. Example: datatypes of columns, null values and many more",
+    metadata= [],
+    statistics= [],
+    insights= [],
     df= pd.read_csv('./data/temp.csv').to_json(),
     stage= WorkflowStage.METADATA_EXTRACTOR_AGENT,
     history= []
@@ -62,7 +62,7 @@ if not os.path.exists(f'./logs/{uuid_num}'):
 try:
     for stage_output in graph_agent.stream(state, runnable_config):
         with open('./logs/' + uuid_num + '/' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
-            f.write(stage_output)
+            f.write(str(stage_output))
 except:
     with open('./logs/' + uuid_num + '/error_' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
         f.write(traceback.format_exc())

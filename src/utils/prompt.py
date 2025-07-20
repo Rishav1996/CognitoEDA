@@ -51,6 +51,7 @@ PYTHON_REPL_PROMPT = PromptTemplate(
         "Focus solely on Python code execution. It's presumed you are carrying out Python operations.\n"
         "EXCLUDE : Visual representations\n"
         "DATAFRAME : {df}\n"
+        "METADATA : {metadata}\n"
         "TASK : {task}\n"
         "OUTPUT FORMAT : {output_format}"
     ),

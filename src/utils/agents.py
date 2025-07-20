@@ -48,9 +48,10 @@ def get_prompt(state: AgentState):
     elif stage == WorkflowStage.PYTHON_CODER_AGENT:
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
-            tool_list=", ".join(getattr(tool, "name", tool.__class__.__name__) for tool in common_tools),
+            tool_list=", ".join(getattr(tool, "name", tool.__class__.__name__) for tool in common_tools + [get_python_repl_tool_with_df(df)]),
             task=task,
-            dataframe=df
+            df=df,
+            metadata=metadata
         )
     elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         return PROMPT_MAPPER[stage].format(
@@ -77,11 +78,12 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
     stage = state['stage']
     agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
+    prompt=get_prompt(state)
 
     llm_agent_obj = create_react_agent(
         model=MODEL_GEMINI,
         tools=common_tools,
-        prompt=get_prompt(state)
+        prompt=prompt
     )
     content_list = []
     for task in task_list:
@@ -93,7 +95,10 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
             try:
                 content = PARSER_MAPPER[stage].parse(content)
                 content = content.output_format
-                content_list.append(content)
+                if isinstance(content, list):
+                    content_list.extend(content)
+                else:
+                    content_list.append(content)
                 break
             except Exception as e:
                 logging.warning(f"Parsing failed: {e}. Retrying after {agent_sleep_seconds} seconds...")
@@ -105,16 +110,18 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
         if agent_retry_limit == 0:
             logging.error("Failed to parse content after multiple retries.")
             raise ValueError("Failed to parse content after multiple retries.")
+
     state['task'] = content_list[0] if len(content_list) == 1 else content_list
-    state['stage'] = STAGE_MAPPER[stage]
-    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': content_list}]
 
     if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
         state['metadata'] = state['task']
-    if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+    elif state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
         state['statistics'] = state['task']
-    if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+    elif state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         state['insights'] = state['task']
+
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'prompt': prompt, 'uuid': config.get("uuid"), 'output': content_list}]
     return state
 
 
@@ -148,14 +155,16 @@ def pandas_agent(state: AgentState, config: RunnableConfig) -> AgentState:
                 agent_retry_limit -= 1
                 time.sleep(agent_sleep_seconds)
     state['task'] = output_list[0]['answer'] if len(output_list) == 1 else [i['answer'] for i in output_list]
-    state['stage'] = STAGE_MAPPER[stage]
-    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': output_list}]
+
     if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
         state['metadata'] = state['task']
     if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
         state['statistics'] = state['task']
     if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         state['insights'] = state['task']
+
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': output_list}]
     return state
 
 
@@ -168,12 +177,14 @@ def python_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     stage = state['stage']
     agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
     df = state['df']
+    prompt=get_prompt(state)
+    print(prompt)
 
     tools = common_tools + [get_python_repl_tool_with_df(df)]  # Use the wrapped tool
     python_agent_obj = create_react_agent(
         model=MODEL_GEMINI,
         tools=tools,
-        prompt=get_prompt(state)
+        prompt=prompt
     )
     content_list = []
     for task in task_list:
@@ -181,11 +192,15 @@ def python_agent(state: AgentState, config: RunnableConfig) -> AgentState:
         content = python_agent_obj.invoke(
             {"messages": [{"role": "user", "content": task}]}
         )['messages'][-1].content
+        print(content)
         while agent_retry_limit > 0:
             try:
                 content = PARSER_MAPPER[stage].parse(content)
                 content = content.output_format
-                content_list.append(content)
+                if isinstance(content, list):
+                    content_list.extend(content)
+                else:
+                    content_list.append(content)
                 break
             except Exception as e:
                 logging.warning(f"Parsing failed: {e}. Retrying after {agent_sleep_seconds} seconds...")
@@ -197,13 +212,16 @@ def python_agent(state: AgentState, config: RunnableConfig) -> AgentState:
         if agent_retry_limit == 0:
             logging.error("Failed to parse content after multiple retries.")
             raise ValueError("Failed to parse content after multiple retries.")
+
     state['task'] = content_list[0] if len(content_list) == 1 else content_list
-    state['stage'] = STAGE_MAPPER[stage]
-    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'uuid': config.get("uuid"), 'output': content_list}]
+
     if state['stage'] == WorkflowStage.STRUCTURE_CREATOR_AGENT:
         state['metadata'] = state['task']
     if state['stage'] == WorkflowStage.STATISTICS_GENERATOR_AGENT:
         state['statistics'] = state['task']
     if state['stage'] == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         state['insights'] = state['task']
+
+    state['stage'] = STAGE_MAPPER[stage]
+    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'prompt': prompt, 'uuid': config.get("uuid"), 'output': content_list}]
     return state

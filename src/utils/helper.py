@@ -2,7 +2,6 @@ from enum import Enum
 from typing import Optional
 from typing_extensions import TypedDict
 from langchain.chat_models import init_chat_model
-import pandas as pd
 
 
 class ModelClasses(Enum):
@@ -32,10 +31,10 @@ class AgentState(TypedDict):
     State for the agent graph.
     """
     task: list | str
-    metadata: dict
-    statistics: dict
-    insights: dict
-    df: pd.DataFrame
+    metadata: list
+    statistics: list
+    insights: list
+    df: dict
     stage: WorkflowStage
     history: list
 

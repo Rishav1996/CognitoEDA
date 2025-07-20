@@ -17,7 +17,7 @@ class StructuredFileOutputFormatSchema(BaseModel):
 class StatisticsExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Statistics Extractor Agent."""
     output_format: list[str] = Field(
-        description="A list of statistical extraction steps to be performed on the data."
+        description="A list only 2 statistical extraction steps to be performed on the data."
     )
 
 class PythonREPLOutputFormatSchema(BaseModel):
