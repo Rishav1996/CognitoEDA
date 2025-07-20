@@ -37,7 +37,7 @@ class AgentState(TypedDict):
     statistics: Optional[dict] = None
     df: pd.DataFrame
     stage: WorkflowStage
-    history: list
+    history: list = []
 
 class ConfigSchema(TypedDict):
     """

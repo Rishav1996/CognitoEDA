@@ -104,6 +104,7 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
             raise ValueError("Failed to parse content after multiple retries.")
     state.task = content_list[0] if len(content_list) == 1 else content_list
     state.stage = STAGE_MAPPER[stage]
+    state.history = state.history + [{'task': task, 'stage': stage}]
     return state
 
 
@@ -139,6 +140,7 @@ def pandas_agent(state: AgentState, config: RunnableConfig) -> AgentState:
                 content = agent.invoke(task)
     state.task = output_list[0] if len(output_list) == 1 else output_list
     state.stage = STAGE_MAPPER[stage]
+    state.history = state.history + [{'task': task, 'stage': stage}]
     return state
 
 
@@ -182,4 +184,5 @@ def python_agent(state: AgentState, config: RunnableConfig) -> AgentState:
             raise ValueError("Failed to parse content after multiple retries.")
     state.task = content_list[0] if len(content_list) == 1 else content_list
     state.stage = STAGE_MAPPER[stage]
+    state.history = state.history + [{'task': task, 'stage': stage}]
     return state
