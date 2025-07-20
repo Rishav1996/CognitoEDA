@@ -61,7 +61,8 @@ if not os.path.exists(f'./logs/{uuid_num}'):
 
 try:
     for stage_output in graph_agent.stream(state, runnable_config):
-        with open('./logs/' + uuid_num + '/' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
+        agent_name = list(stage_output.keys())[0]
+        with open('./logs/' + uuid_num + '/{agent_name}-' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
             f.write(str(stage_output))
 except:
     with open('./logs/' + uuid_num + '/error_' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
