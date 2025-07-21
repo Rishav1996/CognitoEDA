@@ -8,6 +8,9 @@ from langchain_community.agent_toolkits.load_tools import load_tools
 from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_experimental.utilities import PythonREPL
 from langchain.tools import Tool
+import pandas as pd
+from ast import literal_eval
+
 
 # A tool for searching and retrieving information from arXiv.
 arxiv_tool = load_tools(["arxiv"])
@@ -28,7 +31,11 @@ def get_python_repl_tool_with_df(df):
     Returns:
         Tool: A LangChain tool configured for Python code execution with the DataFrame.
     """
-    repl = PythonREPL(locals={"df": df})
+    df = literal_eval(df)
+    columns = list(df[0].keys())
+    df = [list(i.values()) for i in df]
+
+    repl = PythonREPL(locals={"df": pd.DataFrame(data=df, columns=columns)})
 
     def run_python_code(code: str) -> str:
         """Executes the given Python code in the REPL environment."""

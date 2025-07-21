@@ -1,3 +1,4 @@
+from typing import TypedDict
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
 from utils.helper import WorkflowStage
@@ -5,7 +6,7 @@ from utils.helper import WorkflowStage
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
     output_format: list[str] = Field(
-        description="A list of metadata extraction steps to be performed on the data."
+        description="A list of the all possible metadata extraction steps to be performed on the data. Example: like extract column information, list of all columns and many more about the data analysis steps. Limit to only : 2"
     )
 
 class StructuredFileOutputFormatSchema(BaseModel):
@@ -17,7 +18,7 @@ class StructuredFileOutputFormatSchema(BaseModel):
 class StatisticsExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Statistics Extractor Agent."""
     output_format: list[str] = Field(
-        description="A list only 2 statistical extraction steps to be performed on the data."
+        description="A list of statistical extraction steps to be performed on the data.  Limit to only : 2"
     )
 
 class PythonREPLOutputFormatSchema(BaseModel):
@@ -26,37 +27,10 @@ class PythonREPLOutputFormatSchema(BaseModel):
         description="The output of the Python Code executed."
     )
 
-class GraphFormatSchema(BaseModel):
-    """Schema for the output of the Graph Agent."""
-    graph_name: str = Field(
-        description="The name of the graph to be generated."
-    )
-    graph_description: str = Field(
-        description="A detailed description of the graph what needs to be generated and how it should be visualized."
-    )
-    graph_type: str = Field(
-        description="The type of graph to be generated (e.g., bar chart, line chart, scatter plot and many more)."
-    )
-
-class BusinessAnalyticsInsightFormatSchema(BaseModel):
-    """Schema for a single business insight."""
-    insight_name: str = Field(
-        description="The name of the business insight."
-    )
-    insight_description: str = Field(
-        description="A detailed description of the business insight."
-    )
-    insights_generated: list[str] = Field(
-        description="A list of insights generated from the metadata and statistical information."
-    )
-    insights_graph: list[GraphFormatSchema] = Field(
-        description="A list of graphs to be generated for the insight."
-    )
-
 class BusinessAnalyticsOutputFormatSchema(BaseModel):
     """Schema for the output of the Business Analytics Agent."""
-    output_format: list[BusinessAnalyticsInsightFormatSchema] = Field(
-        description="A list of business insights to be generated."
+    output_format: list[str] = Field(
+        description="Create an Insight name, Insight Descrition and Insights Generated. Limit to 2"
     )
 
 class HTMLInsightOutputFormatSchema(BaseModel):
@@ -95,6 +69,16 @@ business_analytics_parser = PydanticOutputParser(
 html_insight_parser = PydanticOutputParser(
     pydantic_object=HTMLInsightOutputFormatSchema
 )
+
+
+FORMAT_MAPPER = {
+    WorkflowStage.METADATA_EXTRACTOR_AGENT: MetadataExtractorOutputFormatSchema,
+    WorkflowStage.STRUCTURE_CREATOR_AGENT: StructuredFileOutputFormatSchema,
+    WorkflowStage.STATISTICS_GENERATOR_AGENT: StatisticsExtractorOutputFormatSchema,
+    WorkflowStage.PYTHON_CODER_AGENT: PythonREPLOutputFormatSchema,
+    WorkflowStage.BUSINESS_INSIGHTS_AGENT: BusinessAnalyticsOutputFormatSchema,
+    WorkflowStage.WEB_DEVELOPER_AGENT: HTMLInsightOutputFormatSchema
+}
 
 
 PARSER_MAPPER = {

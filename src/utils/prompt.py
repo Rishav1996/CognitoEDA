@@ -8,7 +8,6 @@ METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     template=(
         "ROLE : You are a seasoned Data Analyst\n"
         "INSTRUCTIONS : Your goal is to create small or one liner steps for pandas operations in acquiring diverse data attributes from the given dataset.\n"
-        "TOOLS : You can utilize `{tool_list}` for this assignment.\n"
         "Focus solely on metadata. Assume you are employing pandas operations.\n"
         "EXCLUDE : Visual representations, statistical computations, data ingestion.\n"
         "OUTPUT FORMAT : {output_format}"
@@ -32,7 +31,6 @@ STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
     template=(
         "ROLE : You are a seasoned Data Scientist\n"
         "METADATA : {metadata}\n"
-        "TOOLS : You can utilize {tool_list} as your resources to accomplish the objective.\n"
         "INSTRUCTIONS : Your mission is to write quick and small analysis steps for deriving diverse statistical insights from the provided metadata.\n"
         "Investigate novel statistical methodologies and approaches for data analysis, leveraging the aforementioned tools.\n"
         "Focus exclusively on statistical details, specifically employing libraries such as scipy and statsmodels.\n"
@@ -47,10 +45,9 @@ PYTHON_REPL_PROMPT = PromptTemplate(
     template=(
         "ROLE : You function as a skilled Python Programmer\n"
         "TOOLS : You are equipped with {tool_list} as your resources to accomplish the objective.\n"
-        "INSTRUCTIONS : Your aim is to develop a Python function for the specified task and run Python code utilizing the resources.\n"
+        "INSTRUCTIONS : Your aim is to develop a Python function for the specified task and run Python code utilizing the tool PythonREPL.\n"
         "Focus solely on Python code execution. It's presumed you are carrying out Python operations.\n"
-        "EXCLUDE : Visual representations\n"
-        "DATAFRAME : {df}\n"
+        "EXCLUDE : Avoid creating any graphs\n"
         "METADATA : {metadata}\n"
         "TASK : {task}\n"
         "OUTPUT FORMAT : {output_format}"
@@ -62,7 +59,6 @@ BUSINESS_ANALYTICS_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You function as a seasoned Business Strategist.\n"
-        "TOOLS : You have access to {tool_list} at your disposal to accomplish the assignment.\n"
         "INSTRUCTIONS : Your aim is to derive strategic business revelations from the supplied metadata and quantitative data.\n"
         "Concentrate exclusively on strategic business implications. Envision yourself executing strategic analysis procedures.\n"
         "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
@@ -77,7 +73,6 @@ HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You are a seasoned Web Developer\n"
-        "TOOLS : You are equipped with {tool_list} to accomplish this task.\n"
         "INSTRUCTIONS : Your mission is to develop Web content based on the provided business insights.\n"
         "Focus solely on Web content creation. Envision yourself executing Web operations.\n"
         "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"

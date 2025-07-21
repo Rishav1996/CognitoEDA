@@ -20,11 +20,12 @@ altair
 tabulate
 
 # Experiment tracking and workflow
-mlflow
+mlflow>=3.0.0rc0
 
 # Environment and testing
 python-dotenv
 pytest
+setuptools
 
 # Information retrieval
 arxiv
