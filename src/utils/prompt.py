@@ -7,9 +7,8 @@ METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You are a seasoned Data Analyst\n"
-        "INSTRUCTIONS : Your goal is to create small or one liner steps for pandas operations in acquiring diverse data attributes from the given dataset.\n"
-        "Focus solely on metadata. Assume you are employing pandas operations.\n"
-        "EXCLUDE : Visual representations, statistical computations, data ingestion.\n"
+        "INSTRUCTIONS: Help the user understand the data by outlining a simple, step-by-step exploration process.\n"
+        "EXCLUDE: Data visualization, statistical analysis, and data loading/ingestion.\n"
         "OUTPUT FORMAT : {output_format}"
     ),
 )
@@ -43,11 +42,11 @@ STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
 PYTHON_REPL_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You function as a skilled Python Programmer\n"
-        "TOOLS : You are equipped with {tool_list} as your resources to accomplish the objective.\n"
-        "INSTRUCTIONS : Your aim is to develop a Python function for the specified task and run Python code utilizing the tool PythonREPL.\n"
-        "Focus solely on Python code execution. It's presumed you are carrying out Python operations.\n"
-        "EXCLUDE : Avoid creating any graphs\n"
+        "ROLE: You are a proficient Python Programmer.\n"
+        "TOOLS: You have access to and can utilize the following tools: {tool_list}.\n"
+        "INSTRUCTIONS: Your primary objective is to craft a Python function and then execute Python code using the PythonREPL tool to solve the specified problem.\n"
+        "Prioritize writing and running Python code ONLY.  Assume you're working within a Python programming environment.\n"
+        "RESTRICTIONS:  Do not produce any graphical representations (charts, plots, etc.).\n"
         "METADATA : {metadata}\n"
         "TASK : {task}\n"
         "OUTPUT FORMAT : {output_format}"

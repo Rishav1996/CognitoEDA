@@ -1,12 +1,13 @@
-from typing import TypedDict
+from typing import List
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
 from utils.helper import WorkflowStage
 
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
-    output_format: list[str] = Field(
-        description="A list of the all possible metadata extraction steps to be performed on the data. Example: like extract column information, list of all columns and many more about the data analysis steps. Limit to only : 2"
+    output_format: List[str] = Field(
+        description="Provide a list of metadata extraction steps for data analysis.",
+        max_items=2
     )
 
 class StructuredFileOutputFormatSchema(BaseModel):
@@ -17,20 +18,22 @@ class StructuredFileOutputFormatSchema(BaseModel):
 
 class StatisticsExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Statistics Extractor Agent."""
-    output_format: list[str] = Field(
-        description="A list of statistical extraction steps to be performed on the data.  Limit to only : 2"
+    output_format: List[str] = Field(
+        description="A list of statistical extraction steps to be performed on the data.",
+        max_items=2
     )
 
 class PythonREPLOutputFormatSchema(BaseModel):
     """Schema for the output of the Python REPL Agent."""
     output_format: str = Field(
-        description="The output of the Python Code executed."
+        description="Output from the Python code's run"
     )
 
 class BusinessAnalyticsOutputFormatSchema(BaseModel):
     """Schema for the output of the Business Analytics Agent."""
-    output_format: list[str] = Field(
-        description="Create an Insight name, Insight Descrition and Insights Generated. Limit to 2"
+    output_format: List[str] = Field(
+        description="Create an Insight name, Insight Descrition and Insights Generated.",
+        max_items=2
     )
 
 class HTMLInsightOutputFormatSchema(BaseModel):
