@@ -3,10 +3,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langgraph.graph import StateGraph
-from langchain_core.runnables import RunnableConfig
-from langgraph.checkpoint.memory import MemorySaver
 from utils.helper import AgentState, ConfigSchema, WorkflowStage
-from utils.agents import llm_agent, python_agent
+from utils.agents import llm_agent, pandas_agent
 import pandas as pd
 import os
 from datetime import datetime
@@ -30,7 +28,7 @@ uuid_num = str(uuid.uuid4())
 runnable_config = ConfigSchema(uuid=uuid_num, agent_sleep_seconds=30)
 
 state = AgentState(
-    task= ["The target column is `variety` and this is a `classification` use case. Example: datatypes of columns, null values and many more"],
+    task= ["The target column is `variety` and this is a `classification` use case."],
     metadata= [],
     statistics= [],
     insights= [],
@@ -45,8 +43,8 @@ graph = StateGraph(AgentState, config_schema=ConfigSchema)
 graph.add_node("Metadata Extractor Agent", llm_agent, config_schema=runnable_config)
 graph.add_node("Structured Generator Agent", llm_agent, config_schema=runnable_config)
 graph.add_node("Statistician Agent", llm_agent, config_schema=runnable_config)
-graph.add_node("Python Coder Agent - Pandas", python_agent, config_schema=runnable_config)
-graph.add_node("Python Coder Agent - Statistics", python_agent, config_schema=runnable_config)
+graph.add_node("Python Coder Agent - Pandas", pandas_agent, config_schema=runnable_config)
+graph.add_node("Python Coder Agent - Statistics", pandas_agent, config_schema=runnable_config)
 graph.add_node("Business Insight Agent", llm_agent, config_schema=runnable_config)
 graph.add_node("Web Developer Agent", llm_agent, config_schema=runnable_config)
 

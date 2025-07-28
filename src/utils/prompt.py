@@ -6,7 +6,7 @@ from langchain_core.prompts import PromptTemplate
 METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
-        "ROLE : You are a seasoned Data Analyst\n"
+        "ROLE : You are a proficient Data Analyst\n"
         "INSTRUCTIONS: Help the user understand the data by outlining a simple, step-by-step exploration process.\n"
         "EXCLUDE: Data visualization, statistical analysis, and data loading/ingestion.\n"
         "OUTPUT FORMAT : {output_format}"
