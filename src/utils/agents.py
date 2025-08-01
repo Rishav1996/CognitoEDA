@@ -26,7 +26,6 @@ def get_prompt(state: AgentState):
     metadata = state['metadata'] if state['metadata'] else {}
     insights = state['insights'] if state['insights'] else {}
     statistics = state['statistics'] if state['statistics'] else {}
-    df = state['df']
 
     if stage == WorkflowStage.METADATA_EXTRACTOR_AGENT:
         return PROMPT_MAPPER[stage].format(
@@ -42,13 +41,6 @@ def get_prompt(state: AgentState):
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools),
-            metadata=metadata
-        )
-    elif stage == WorkflowStage.PYTHON_CODER_AGENT:
-        return PROMPT_MAPPER[stage].format(
-            output_format=PARSER_MAPPER[stage].get_format_instructions(),
-            tool_list=", ".join(getattr(tool, "name", tool.__class__.__name__) for tool in common_tools + [get_python_repl_tool_with_df(df)]),
-            task=task,
             metadata=metadata
         )
     elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
@@ -75,7 +67,6 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
     stage = state['stage'][-1]
-    agent_sleep_seconds = config.get('metadata').get("agent_sleep_seconds")
     prompt=get_prompt(state)
 
     llm_agent_obj = create_react_agent(
@@ -85,16 +76,14 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
         response_format=FORMAT_MAPPER[stage]
     )
     content_list = []
-    for task in task_list:
-        content = llm_agent_obj.invoke(
-            {"messages": [{"role": "user", "content": task}]}
-        )['structured_response']
-        content = content.output_format
-        if isinstance(content, list):
-            content_list.extend(content)
-        else:
-            content_list.append(content)
-        time.sleep(agent_sleep_seconds)
+    content = llm_agent_obj.invoke(
+        {"messages": [{"role": "user", "content": '\n\n'.join(task_list)}]}
+    )['structured_response']
+    content = content.output_format
+    if isinstance(content, list):
+        content_list.extend(content)
+    else:
+        content_list.append(content)
 
     state['task'] = content_list
 
@@ -106,7 +95,7 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
         state['insights'] = state['task']
 
     state['stage'] = state['stage'] + [get_next_stage_mapper(state['stage'])]
-    state['history'] = state['history'] + [{'task': task, 'stage': stage, 'prompt': prompt, 'uuid': config.get("uuid"), 'output': content_list}]
+    state['history'] = state['history'] + [{'task': task_list, 'stage': stage, 'prompt': prompt, 'uuid': config.get("uuid"), 'output': content_list}]
     return state
 
 
@@ -122,11 +111,9 @@ def pandas_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     pandas_agent_obj = create_pandas_dataframe_agent(llm=MODEL_GEMINI, df=df, agent_type='tool-calling', allow_dangerous_code=True)
     content_list = []
     for task in task_list:
-        content = pandas_agent_obj.invoke(task)
+        content = pandas_agent_obj.invoke(task  + '\n\nNote: if unable to answer return `None`')
         content = content['output']
-        if isinstance(content, list):
-            content_list.extend(content)
-        else:
+        if content != 'None':
             content_list.append(content)
         time.sleep(agent_sleep_seconds)
     state['task'] = content_list

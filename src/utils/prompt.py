@@ -7,8 +7,8 @@ METADATA_EXTRACTOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You are a proficient Data Analyst\n"
-        "INSTRUCTIONS: Help the user understand the data by outlining a simple, step-by-step exploration process.\n"
-        "EXCLUDE: Data visualization, statistical analysis, and data loading/ingestion.\n"
+        "TOOLS : {tool_list}\n"
+        "GOAL: Write small steps of operations to extract metadata of the dataset\n"
         "OUTPUT FORMAT : {output_format}"
     ),
 )
@@ -18,7 +18,7 @@ STRUCTURED_FILE_PROMPT = PromptTemplate(
     input_variables=["content", "output_format"],
     template=(
         "ROLE : You are a seasoned Software Engineer, adept at crafting easily understandable documentation.\n"
-        "INSTRUCTIONS : Your task is to devise a structured data representation based on the given dictionary.\n"
+        "GOAL : Your task is to devise a markdown structure representation based on the given dictionary.\n"
         "CONTENT : {content}\n"
         "OUTPUT FORMAT : {output_format}"
     ),
@@ -30,25 +30,10 @@ STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
     template=(
         "ROLE : You are a seasoned Data Scientist\n"
         "METADATA : {metadata}\n"
-        "INSTRUCTIONS : Your mission is to write quick and small analysis steps for deriving diverse statistical insights from the provided metadata.\n"
+        "GOAL : Your mission is to write quick and small analysis steps for deriving diverse statistical insights from the provided metadata.\n"
         "Investigate novel statistical methodologies and approaches for data analysis, leveraging the aforementioned tools.\n"
         "Focus exclusively on statistical details, specifically employing libraries such as scipy and statsmodels.\n"
         "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
-        "OUTPUT FORMAT : {output_format}"
-    ),
-)
-
-"""Prompt for the Python REPL Agent."""
-PYTHON_REPL_PROMPT = PromptTemplate(
-    input_variables=["output_format"],
-    template=(
-        "ROLE: You are a proficient Python Programmer.\n"
-        "TOOLS: You have access to and can utilize the following tools: {tool_list}.\n"
-        "INSTRUCTIONS: Your primary objective is to craft a Python function and then execute Python code using the PythonREPL tool to solve the specified problem.\n"
-        "Prioritize writing and running Python code ONLY.  Assume you're working within a Python programming environment.\n"
-        "RESTRICTIONS:  Do not produce any graphical representations (charts, plots, etc.).\n"
-        "METADATA : {metadata}\n"
-        "TASK : {task}\n"
         "OUTPUT FORMAT : {output_format}"
     ),
 )
@@ -58,7 +43,7 @@ BUSINESS_ANALYTICS_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You function as a seasoned Business Strategist.\n"
-        "INSTRUCTIONS : Your aim is to derive strategic business revelations from the supplied metadata and quantitative data.\n"
+        "GOAL : Your aim is to derive strategic business revelations from the supplied metadata and quantitative data.\n"
         "Concentrate exclusively on strategic business implications. Envision yourself executing strategic analysis procedures.\n"
         "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
         "METADATA : {metadata}\n"
@@ -72,9 +57,8 @@ HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You are a seasoned Web Developer\n"
-        "INSTRUCTIONS : Your mission is to develop Web content based on the provided business insights.\n"
-        "Focus solely on Web content creation. Envision yourself executing Web operations.\n"
-        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
+        "GOAL :  Your mission is to develop Interactive Web content and creative charts based on the provided business insights.\n"
+        "Focus solely on Interactive Web content creation and creative charts. Envision yourself executing Web operations.\n"
         "INSIGHTS : {insights}\n"
         "METADATA : {metadata}\n"
         "STATISTICS : {statistics}\n"
@@ -88,6 +72,5 @@ PROMPT_MAPPER = {
     WorkflowStage.STRUCTURE_CREATOR_AGENT: STRUCTURED_FILE_PROMPT,
     WorkflowStage.STATISTICS_GENERATOR_AGENT: STATISTICS_EXTRACTOR_PROMPT,
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: BUSINESS_ANALYTICS_PROMPT,
-    WorkflowStage.PYTHON_CODER_AGENT: PYTHON_REPL_PROMPT,
     WorkflowStage.WEB_DEVELOPER_AGENT: HTML_INSIGHT_GENERATOR_PROMPT
 }

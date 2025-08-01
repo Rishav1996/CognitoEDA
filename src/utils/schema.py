@@ -6,8 +6,8 @@ from utils.helper import WorkflowStage
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
     output_format: List[str] = Field(
-        description="Provide a list of metadata extraction steps for data analysis.",
-        max_items=2
+        description="Provide a comprehensive list of metadata items, like Dataset Dimensions, Column Details and many more",
+        max_items=10
     )
 
 class StructuredFileOutputFormatSchema(BaseModel):
@@ -20,7 +20,7 @@ class StatisticsExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Statistics Extractor Agent."""
     output_format: List[str] = Field(
         description="A list of statistical extraction steps to be performed on the data.",
-        max_items=2
+        max_items=20
     )
 
 class PythonREPLOutputFormatSchema(BaseModel):
@@ -32,8 +32,7 @@ class PythonREPLOutputFormatSchema(BaseModel):
 class BusinessAnalyticsOutputFormatSchema(BaseModel):
     """Schema for the output of the Business Analytics Agent."""
     output_format: List[str] = Field(
-        description="Create an Insight name, Insight Descrition and Insights Generated.",
-        max_items=2
+        description="Create an Insight name, Insight Descrition and Insights Generated."
     )
 
 class HTMLInsightOutputFormatSchema(BaseModel):
@@ -58,11 +57,6 @@ statistics_parser = PydanticOutputParser(
     pydantic_object=StatisticsExtractorOutputFormatSchema
 )
 
-"""Parser for the Python REPL Agent's output."""
-python_repl_parser = PydanticOutputParser(
-    pydantic_object=PythonREPLOutputFormatSchema
-)
-
 """Parser for the Business Analytics Agent's output."""
 business_analytics_parser = PydanticOutputParser(
     pydantic_object=BusinessAnalyticsOutputFormatSchema
@@ -78,7 +72,6 @@ FORMAT_MAPPER = {
     WorkflowStage.METADATA_EXTRACTOR_AGENT: MetadataExtractorOutputFormatSchema,
     WorkflowStage.STRUCTURE_CREATOR_AGENT: StructuredFileOutputFormatSchema,
     WorkflowStage.STATISTICS_GENERATOR_AGENT: StatisticsExtractorOutputFormatSchema,
-    WorkflowStage.PYTHON_CODER_AGENT: PythonREPLOutputFormatSchema,
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: BusinessAnalyticsOutputFormatSchema,
     WorkflowStage.WEB_DEVELOPER_AGENT: HTMLInsightOutputFormatSchema
 }
@@ -88,7 +81,6 @@ PARSER_MAPPER = {
     WorkflowStage.METADATA_EXTRACTOR_AGENT: metadata_parser,
     WorkflowStage.STRUCTURE_CREATOR_AGENT: structured_file_parser,
     WorkflowStage.STATISTICS_GENERATOR_AGENT: statistics_parser,
-    WorkflowStage.PYTHON_CODER_AGENT: python_repl_parser,
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: business_analytics_parser,
     WorkflowStage.WEB_DEVELOPER_AGENT: html_insight_parser
 }
