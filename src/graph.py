@@ -11,7 +11,6 @@ import os
 from datetime import datetime
 import traceback
 import uuid
-import json
 import mlflow
 
 
@@ -83,7 +82,7 @@ try:
             with open('./logs/' + uuid_num + f'/index.html', 'w') as f:
                 f.write(str(stage_output[NodeName.WEB_DEVELOPER_AGENT]['task'][0]))
         with open('./logs/' + uuid_num + f'/{agent_name}-' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
-            f.write(str(stage_output))
+            f.write(str(stage_output).replace('\n', '\\n'))
 except:
     with open('./logs/' + uuid_num + '/error_' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
         f.write(traceback.format_exc())
