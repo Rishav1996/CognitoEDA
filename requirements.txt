@@ -33,3 +33,4 @@ ddgs
 duckduckgo-search
 
 # UI and workflow tools
+taipy

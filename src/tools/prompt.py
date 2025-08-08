@@ -1,5 +1,5 @@
-from utils.schema import *
-from utils.helper import WorkflowStage
+from tools.schema import *
+from tools.helper import WorkflowStage
 from langchain_core.prompts import PromptTemplate
 
 """Prompt for the Metadata Extractor Agent."""

@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
-from utils.helper import WorkflowStage
+from tools.helper import WorkflowStage
 
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
@@ -32,7 +32,8 @@ class PythonREPLOutputFormatSchema(BaseModel):
 class BusinessAnalyticsOutputFormatSchema(BaseModel):
     """Schema for the output of the Business Analytics Agent."""
     output_format: List[str] = Field(
-        description="Create an Insight name, Insight Descrition and Insights Generated."
+        description="Create an Insight name, Insight Descrition and Insights Generated.",
+        max_items=20
     )
 
 class HTMLInsightOutputFormatSchema(BaseModel):

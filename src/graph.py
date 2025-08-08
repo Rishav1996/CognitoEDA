@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langgraph.graph import StateGraph
-from utils.helper import AgentState, ConfigSchema, WorkflowStage
-from utils.agents import llm_agent, pandas_agent
+from langchain_core.runnables.retry import RetryPolicy
+from tools.helper import AgentState, ConfigSchema, WorkflowStage, NodeName
+from tools.agents import llm_agent, pandas_agent
 import pandas as pd
 import os
 from datetime import datetime
@@ -27,6 +28,13 @@ uuid_num = str(uuid.uuid4())
 
 runnable_config = ConfigSchema(uuid=uuid_num, agent_sleep_seconds=30)
 
+custom_retry_policy = RetryPolicy(
+    max_attempts=5,
+    min_interval=60,
+    max_interval=120,
+    exponential_backoff=True,
+)
+
 state = AgentState(
     task= ["The target column is `variety` and this is a `classification` use case."],
     metadata= [],
@@ -40,23 +48,23 @@ state = AgentState(
 graph = StateGraph(AgentState, config_schema=ConfigSchema)
 
 
-graph.add_node("Metadata Extractor Agent", llm_agent, config_schema=runnable_config)
-graph.add_node("Structured Generator Agent", llm_agent, config_schema=runnable_config)
-graph.add_node("Statistician Agent", llm_agent, config_schema=runnable_config)
-graph.add_node("Python Coder Agent - Pandas", pandas_agent, config_schema=runnable_config)
-graph.add_node("Python Coder Agent - Statistics", pandas_agent, config_schema=runnable_config)
-graph.add_node("Business Insight Agent", llm_agent, config_schema=runnable_config)
-graph.add_node("Web Developer Agent", llm_agent, config_schema=runnable_config)
+graph.add_node(NodeName.METADATA_EXTRACTOR_AGENT, llm_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.STRUCTURE_CREATOR_AGENT, llm_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.STATISTICS_GENERATOR_AGENT, llm_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.PYTHON_PANDAS_CODER_AGENT, pandas_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.PYTHON_STATISTICS_CODER_AGENT, pandas_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.BUSINESS_INSIGHTS_AGENT, llm_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
+graph.add_node(NodeName.WEB_DEVELOPER_AGENT, llm_agent, config_schema=runnable_config, retry_policy=custom_retry_policy)
 
-graph.add_edge("Metadata Extractor Agent", "Python Coder Agent - Pandas")
-graph.add_edge("Python Coder Agent - Pandas", "Structured Generator Agent")
-graph.add_edge("Structured Generator Agent", "Statistician Agent")
-graph.add_edge("Statistician Agent", "Python Coder Agent - Statistics")
-graph.add_edge("Python Coder Agent - Statistics", "Business Insight Agent")
-graph.add_edge("Business Insight Agent", "Web Developer Agent")
+graph.add_edge(NodeName.METADATA_EXTRACTOR_AGENT, NodeName.PYTHON_PANDAS_CODER_AGENT)
+graph.add_edge(NodeName.PYTHON_PANDAS_CODER_AGENT, NodeName.STRUCTURE_CREATOR_AGENT)
+graph.add_edge(NodeName.STRUCTURE_CREATOR_AGENT, NodeName.STATISTICS_GENERATOR_AGENT)
+graph.add_edge(NodeName.STATISTICS_GENERATOR_AGENT, NodeName.PYTHON_STATISTICS_CODER_AGENT)
+graph.add_edge(NodeName.PYTHON_STATISTICS_CODER_AGENT, NodeName.BUSINESS_INSIGHTS_AGENT)
+graph.add_edge(NodeName.BUSINESS_INSIGHTS_AGENT, NodeName.WEB_DEVELOPER_AGENT)
 
-graph.set_entry_point("Metadata Extractor Agent")
-graph.set_finish_point("Web Developer Agent")
+graph.set_entry_point(NodeName.METADATA_EXTRACTOR_AGENT)
+graph.set_finish_point(NodeName.WEB_DEVELOPER_AGENT)
 
 graph_agent = graph.compile()
 
@@ -71,9 +79,9 @@ try:
     for stage_output in graph_agent.stream(state, runnable_config):
         agent_name = list(stage_output.keys())[0]
         print(f'Completed Agent Flow - {agent_name}')
-        if agent_name == "Web Developer Agent":
+        if agent_name == NodeName.WEB_DEVELOPER_AGENT:
             with open('./logs/' + uuid_num + f'/index.html', 'w') as f:
-                f.write(str(stage_output["Web Developer Agent"]['task'][0]))
+                f.write(str(stage_output[NodeName.WEB_DEVELOPER_AGENT]['task'][0]))
         with open('./logs/' + uuid_num + f'/{agent_name}-' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
             f.write(str(stage_output))
 except:

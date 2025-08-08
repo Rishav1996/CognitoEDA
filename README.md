@@ -22,25 +22,30 @@
 ```
 CognitoEDA/
 │
-├── data/
-│   ├── temp.csv           # Sample dataset for EDA
-│   ├── metadata.txt       # Example output of structured EDA report
-│   ├── statistics.txt     # Example output of structured statistics report
-│   └── insights.html      # Example output of HTML insights
-│
 ├── src/
-│   ├── app.py             # (Entry point for app, if needed)
-│   ├── graph.py           # Main workflow script
-│   └── utils/
-│       ├── __init__.py
-│       ├── agents.py      # Agent definitions and orchestration
-│       ├── prompt.py      # Prompt templates for LLMs
-│       ├── schema.py      # Pydantic schemas and output parsers
-│       └── tools.py       # Custom tools for agents
+│   ├── app.py             # Main Taipy application
+│   ├── app.css            # CSS styles for the application
+│   ├── graph.py           # Core agentic workflow logic
+│   ├── pages/             # Taipy pages for the UI
+│   │   ├── agent_page.py
+│   │   ├── history_page.py
+│   │   └── introduction_page.py
+│   ├── static/            # Static assets (images, etc.)
+│   │   └── graph.png
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── agents.py      # Agent definitions
+│   │   ├── helper.py      # Helper functions
+│   │   ├── prompt.py      # Prompt templates
+│   │   ├── schema.py      # Pydantic schemas
+│   │   └── tools.py       # Custom tools for agents
+│   └── utils/             # Utility scripts
 │
-├── requirements.txt       # Python dependencies
-├── pyproject.toml         # Project metadata and dependencies (PEP 621)
-└── README.md              # Project documentation
+├── .gitignore
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+└── uv.lock
 ```
 
 ---
@@ -60,30 +65,31 @@ CognitoEDA/
 
 ---
 
+## 📈 Agentic Workflow
+
+![Application Agentic Workflow](src/static/graph.png)
+
+---
+
 ## 🚦 Example Usage
 
-1. **Prepare your data:**  
-   Place your CSV file in the `data/` directory as `temp.csv`.
-
-2. **Create a virtual environment:**  
+1. **Create a virtual environment:**  
    ```bash
    uv venv
    ```
 
-3. **Install dependencies:**  
+2. **Install dependencies:**  
    ```bash
    uv add -r requirements.txt
    ```
 
-4. **Run the workflow:**  
+3. **Run the application:**  
    ```bash
-   uv run src/graph.py
+   uv run taipy run ./src/app.py
    ```
 
-5. **View the results:**  
-   - The generated EDA report will be saved as `data/metadata.txt`.
-   - The statistics report will be saved as `data/statistics.txt`.
-   - The HTML insights will be saved as `data/insights.html`.
+4. **Access the application:**  
+   Open your web browser and navigate to the URL provided by Taipy (usually `http://127.0.0.1:5050`).
 
 ---
 
@@ -120,17 +126,16 @@ The Pandas agent executes code in a Python REPL.
 ## 🧩 Customization
 
 - **Prompts:**  
-  Modify `src/utils/prompt.py` to change how the LLMs are instructed.
+  Modify `src/tools/prompt.py` to change how the LLMs are instructed.
 - **Schemas:**  
-  Update `src/utils/schema.py` to adjust output formats.
+  Update `src/tools/schema.py` to adjust output formats.
 - **Agents:**  
-  Extend or modify agent logic in `src/utils/agents.py`.
+  Extend or modify agent logic in `src/tools/agents.py`.
 - **Tools:**  
-  Add or modify agent tools in `src/utils/tools.py`.
+  Add or modify agent tools in `src/tools/tools.py`.
 
 ---
 
 ## 📄 License
 
-This project is for research and educational purposes.  
-Please review dependencies for their respective licenses.
+This project is for research and educational purposes. Please review dependencies for their respective licenses.
