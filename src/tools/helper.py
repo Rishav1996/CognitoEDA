@@ -27,8 +27,6 @@ class NodeName(Enum):
     BUSINESS_INSIGHTS_AGENT = "Business Insight Agent"
     WEB_DEVELOPER_AGENT = "Web Developer Agent"
 
-
-
 class AgentState(TypedDict):
     """
     State for the agent graph.

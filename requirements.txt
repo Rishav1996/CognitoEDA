@@ -34,3 +34,4 @@ duckduckgo-search
 
 # UI and workflow tools
 streamlit
+streamlit-option-menu

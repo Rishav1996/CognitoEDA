@@ -23,15 +23,12 @@
 CognitoEDA/
 │
 ├── src/
-│   ├── app.py             # Main Taipy application
-│   ├── app.css            # CSS styles for the application
+│   ├── app.py             # Main Streamlit application
 │   ├── graph.py           # Core agentic workflow logic
-│   ├── pages/             # Taipy pages for the UI
+│   ├── page_section/      # Streamlit pages for the UI
 │   │   ├── agent_page.py
 │   │   ├── history_page.py
-│   │   └── introduction_page.py
-│   ├── static/            # Static assets (images, etc.)
-│   │   └── graph.png
+│   │   └── intro_page.py
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   ├── agents.py      # Agent definitions
@@ -85,11 +82,11 @@ CognitoEDA/
 
 3. **Run the application:**  
    ```bash
-   uv run taipy run ./src/app.py
+   uv run streamlit run ./src/app.py
    ```
 
 4. **Access the application:**  
-   Open your web browser and navigate to the URL provided by Taipy (usually `http://127.0.0.1:5050`).
+   Open your web browser and navigate to the URL provided by Streamlit (usually `http://127.0.0.1:8501`).
 
 ---
 
@@ -112,7 +109,7 @@ CognitoEDA/
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 - [arxiv](https://pypi.org/project/arxiv/)
 - [duckduckgo-search](https://pypi.org/project/duckduckgo-search/)
-- [taipy](https://docs.taipy.io/en/latest/)
+- [streamlit](https://docs.streamlit.io/)
 
 ---
 

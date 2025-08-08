@@ -18,34 +18,5 @@ arxiv_tool = load_tools(["arxiv"])
 # A tool for performing web searches using DuckDuckGo.
 duckduckgo_tool = DuckDuckGoSearchResults(output_type="json")
 
-
-def get_python_repl_tool_with_df(df):
-    """
-    Creates and returns a LangChain Tool that wraps a PythonREPL instance.
-    This tool is initialized with a specific pandas DataFrame, making it
-    available for code execution within the REPL.
-
-    Args:
-        df (pd.DataFrame): The pandas DataFrame to be included in the REPL's local scope.
-
-    Returns:
-        Tool: A LangChain tool configured for Python code execution with the DataFrame.
-    """
-    df = literal_eval(df)
-    columns = list(df[0].keys())
-    df = [list(i.values()) for i in df]
-
-    repl = PythonREPL(locals={"df": pd.DataFrame(data=df, columns=columns)})
-
-    def run_python_code(code: str) -> str:
-        """Executes the given Python code in the REPL environment."""
-        return repl.run(code)
-
-    return Tool(
-        name="PythonREPL",
-        func=run_python_code,
-        description="Executes arbitrary Python code with access to the DataFrame 'df'."
-    )
-
 # A list of common tools available to the agents.
 common_tools = arxiv_tool + [duckduckgo_tool]

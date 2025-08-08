@@ -10,8 +10,6 @@ dependencies = [
     "ddgs>=9.3.1",
     "duckduckgo-search>=8.1.1",
     "google-genai>=1.26.0",
-    "jupyter>=1.1.1",
-    "lab>=8.4",
     "langchain-core>=0.3.69",
     "langchain-experimental>=0.3.4",
     "langchain[google-genai]>=0.3.26",
@@ -28,6 +26,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "setuptools>=80.9.0",
     "statsmodels>=0.14.5",
+    "streamlit>=1.48.0",
+    "streamlit-option-menu>=0.4.0",
     "tabulate>=0.9.0",
-    "taipy>=4.1.0",
 ]
