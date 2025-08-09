@@ -6,8 +6,7 @@ from tools.helper import WorkflowStage
 class MetadataExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Metadata Extractor Agent."""
     output_format: List[str] = Field(
-        description="Provide a comprehensive list of metadata items, like Dataset Dimensions, Column Details and many more",
-        max_items=10
+        description="Provide a comprehensive list of metadata items, like Dataset Dimensions, Column Details and many more"
     )
 
 class StructuredFileOutputFormatSchema(BaseModel):
@@ -19,8 +18,7 @@ class StructuredFileOutputFormatSchema(BaseModel):
 class StatisticsExtractorOutputFormatSchema(BaseModel):
     """Schema for the output of the Statistics Extractor Agent."""
     output_format: List[str] = Field(
-        description="A list of statistical extraction steps to be performed on the data.",
-        max_items=20
+        description="A list of statistical extraction steps to be performed on the data."
     )
 
 class PythonREPLOutputFormatSchema(BaseModel):
@@ -32,14 +30,13 @@ class PythonREPLOutputFormatSchema(BaseModel):
 class BusinessAnalyticsOutputFormatSchema(BaseModel):
     """Schema for the output of the Business Analytics Agent."""
     output_format: List[str] = Field(
-        description="Create an Insight name, Insight Descrition and Insights Generated.",
-        max_items=20
+        description="Create multiple outputs each consisting of Insight name, Insight Description and Key factors."
     )
 
 class HTMLInsightOutputFormatSchema(BaseModel):
     """Schema for the output of the HTML Insight Generator Agent."""
     output_format: str = Field(
-        description="The HTML content of the insights generated. Add visuals and charts as needed."
+        description="The HTML content of the insights generated. Add interactivity to the web page."
     )
 
 

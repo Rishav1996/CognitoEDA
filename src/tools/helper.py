@@ -46,6 +46,7 @@ class ConfigSchema(TypedDict):
     """
     uuid: str
     agent_sleep_seconds: int
+    temperature: float
 
 
 WORKFLOW_SEQUENCE = [
@@ -58,13 +59,13 @@ WORKFLOW_SEQUENCE = [
     WorkflowStage.WEB_DEVELOPER_AGENT
 ]
 
-def get_model(model:str ="models/gemini-2.5-flash", model_provider:str ="google_genai", temperature: float = 1.0):
+def get_model(temperature: float = 1.0):
     """
     Get the model for the agent.
     """
     return init_chat_model(
-        model=model,
-        model_provider=model_provider,
+        model="models/gemini-2.5-flash",
+        model_provider="google_genai",
         temperature=temperature
     )
 

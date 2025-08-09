@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+from graph import set_mlflow
 
 from page_section import agent_page, history_page, intro_page
 
@@ -8,6 +9,8 @@ st.set_page_config(
   layout="wide",
   initial_sidebar_state="expanded"
 )
+
+set_mlflow()
 
 with st.sidebar:
     selected = option_menu(

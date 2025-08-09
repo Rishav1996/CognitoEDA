@@ -1,6 +1,8 @@
 from tools.schema import *
-from tools.helper import WorkflowStage
+from tools.helper import WorkflowStage, AgentState
 from langchain_core.prompts import PromptTemplate
+from tools.support_tools import common_tools
+
 
 """Prompt for the Metadata Extractor Agent."""
 METADATA_EXTRACTOR_PROMPT = PromptTemplate(
@@ -57,8 +59,8 @@ HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
     input_variables=["output_format"],
     template=(
         "ROLE : You are a seasoned Web Developer\n"
-        "GOAL :  Your mission is to develop Interactive Web content and creative charts based on the provided business insights.\n"
-        "Focus solely on Interactive Web content creation and creative charts. Envision yourself executing Web operations.\n"
+        "GOAL :  Your mission is to develop Interactive Web content based on the provided business insights.\n"
+        "Focus solely on Interactive Web content creation. Envision yourself executing Web operations.\n"
         "INSIGHTS : {insights}\n"
         "METADATA : {metadata}\n"
         "STATISTICS : {statistics}\n"
@@ -74,3 +76,48 @@ PROMPT_MAPPER = {
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: BUSINESS_ANALYTICS_PROMPT,
     WorkflowStage.WEB_DEVELOPER_AGENT: HTML_INSIGHT_GENERATOR_PROMPT
 }
+
+
+def get_prompt(state: AgentState):
+    """
+    Get the prompt for the agent based on the current state.
+    """
+    task = state['task']
+    stage = state['stage'][-1]
+    metadata = state['metadata'] if state['metadata'] else {}
+    insights = state['insights'] if state['insights'] else {}
+    statistics = state['statistics'] if state['statistics'] else {}
+
+    if stage == WorkflowStage.METADATA_EXTRACTOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools)
+        )
+    elif stage == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            content=task
+        )
+    elif stage == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            metadata=metadata
+        )
+    elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            metadata=metadata,
+            statistics=statistics
+        )
+    elif stage == WorkflowStage.WEB_DEVELOPER_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            insights=insights,
+            metadata=metadata,
+            statistics=statistics
+        )
+
+
