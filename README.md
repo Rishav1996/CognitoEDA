@@ -114,8 +114,7 @@ The application follows an agentic workflow orchestrated by LangGraph. The proce
 
 Here is a short video demonstrating the application in action:
 
-<video controls src="https://raw.githubusercontent.com/Rishav1996/CognitoEDA/main/src/static/video.mp4" title="CognitoEDA Demo">
-</video>
+<video controls src="https://raw.githubusercontent.com/Rishav1996/CognitoEDA/main/src/static/video.mp4" title="CognitoEDA Demo"></video>
 
 ---
 
