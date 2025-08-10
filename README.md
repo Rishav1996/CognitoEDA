@@ -110,6 +110,15 @@ The application follows an agentic workflow orchestrated by LangGraph. The proce
 
 ---
 
+## 🎥 Demo
+
+Here is a short video demonstrating the application in action:
+
+<video controls src="src/static/video.mp4" title="CognitoEDA Demo">
+</video>
+
+---
+
 ## 📝 Requirements
 
 - Python 3.11+
