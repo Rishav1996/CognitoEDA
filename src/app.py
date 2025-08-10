@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from graph import set_mlflow
-
+import pandas as pd
 from page_section import agent_page, history_page, intro_page
 
 st.set_page_config(
@@ -9,6 +9,22 @@ st.set_page_config(
   layout="wide",
   initial_sidebar_state="expanded"
 )
+
+if 'configuration' not in st.session_state:
+    st.session_state['configuration'] = {
+            'agent_sleep_seconds': 30,
+            'temperature': 1.0,
+            'problem_type': None,
+            'target_column': None,
+            'data_table': pd.DataFrame(),
+            'uuid': None,
+            'stages': [],
+            'status': "Initiating Agent .....",
+            'background_task': None
+        }
+
+if 'configuration' in st.session_state:
+    st.session_state['configuration']['data_table'] = pd.DataFrame()
 
 set_mlflow()
 
