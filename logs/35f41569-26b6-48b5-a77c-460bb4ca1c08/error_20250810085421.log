@@ -1,0 +1,80 @@
+Traceback (most recent call last):
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\grpc_helpers.py", line 116, in __next__
+    return next(self._wrapped)
+           ^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\grpc\_channel.py", line 543, in __next__
+    return self._next()
+           ^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\grpc\_channel.py", line 969, in _next
+    raise self
+grpc._channel._MultiThreadedRendezvous: <_MultiThreadedRendezvous of RPC that terminated with:
+	status = StatusCode.INTERNAL
+	details = "An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting"
+	debug_error_string = "UNKNOWN:Error received from peer ipv4:142.250.206.10:443 {grpc_message:"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting", grpc_status:13}"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Workspace\CognitoEDA\src\page_section\agent_page.py", line 48, in trigger_agent_func
+    for stage_output in graph_agent.stream(state, runnable_config):
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2534, in stream
+    for _ in runner.tick(
+             ^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\runner.py", line 162, in tick
+    run_with_retry(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\retry.py", line 42, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 623, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 377, in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\src\tools\agents.py", line 105, in pandas_agent
+    content = pandas_agent_obj.invoke(task  + '\n\nNote: if unable to answer return `None`')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\chains\base.py", line 167, in invoke
+    raise e
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\chains\base.py", line 157, in invoke
+    self._call(inputs, run_manager=run_manager)
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\agents\agent.py", line 1620, in _call
+    next_step_output = self._take_next_step(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\agents\agent.py", line 1328, in _take_next_step
+    for a in self._iter_next_step(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\agents\agent.py", line 1354, in _iter_next_step
+    output = self._action_agent.plan(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain\agents\agent.py", line 577, in plan
+    for chunk in self.runnable.stream(inputs, config={"callbacks": callbacks}):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 3437, in stream
+    yield from self.transform(iter([input]), config, **kwargs)
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 3423, in transform
+    yield from self._transform_stream_with_config(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 2214, in _transform_stream_with_config
+    chunk: Output = context.run(next, iterator)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 3385, in _transform
+    yield from final_pipeline
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 1428, in transform
+    for ichunk in input:
+                  ^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 5650, in transform
+    yield from self.bound.transform(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 1446, in transform
+    yield from self.stream(final, config, **kwargs)
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 505, in stream
+    for chunk in self._stream(input_messages, stop=stop, **kwargs):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 1534, in _stream
+    for chunk in response:
+                 ^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\grpc_helpers.py", line 119, in __next__
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.InternalServerError: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting
+During task with name 'Python Coder Agent - Pandas' and id '68d08f97-8dfb-5531-ce12-0c23aa3d6582'

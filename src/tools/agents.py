@@ -1,22 +1,36 @@
-from tools.schema import FORMAT_MAPPER
-from tools.support_tools import common_tools
+import time
+from ast import literal_eval
 
+import pandas as pd
 from langchain_core.runnables import RunnableConfig
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
-from ast import literal_eval
-import pandas as pd
-from tools.helper import get_model, AgentState, get_next_stage_mapper, WorkflowStage
-from tools.prompt import get_prompt
 from langgraph.prebuilt import create_react_agent
 
-import time
-
+from tools.helper import AgentState, WorkflowStage, get_model, get_next_stage_mapper
+from tools.prompt import get_prompt
+from tools.schema import FORMAT_MAPPER
+from tools.support_tools import common_tools
 
 
 def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     """
-    Create a React agent for metadata extraction.
-    Retries parsing up to `agent_retry_limit` times, sleeping between retries.
+    Executes a general-purpose LLM agent for various text-based tasks.
+
+    This function serves as a node in the agentic graph. It uses a React agent
+    (an LLM with tools) to process a given task based on the current workflow
+    stage. The agent's response is then used to update the workflow state.
+
+    Args:
+        state (AgentState): The current state of the agentic workflow. It contains
+                            the task list, current stage, and history.
+        config (RunnableConfig): The configuration for the runnable, containing
+                                 metadata like temperature and the run's UUID.
+
+    Returns:
+        AgentState: The updated state object after the agent has processed the task.
+                    The 'task' in the state is updated with the agent's output,
+                    the corresponding data field (metadata, statistics, or insights)
+                    is populated, and the stage is advanced.
     """
     task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
     stage = state['stage'][-1]
@@ -54,6 +68,25 @@ def llm_agent(state: AgentState, config: RunnableConfig) -> AgentState:
 
 
 def pandas_agent(state: AgentState, config: RunnableConfig) -> AgentState:
+    """
+    Executes a Pandas DataFrame agent to perform data analysis tasks.
+
+    This function acts as a node in the agentic graph. It deserializes a
+    DataFrame from the state, creates a specialized Pandas agent, and executes
+    a list of tasks (e.g., "calculate the mean of the 'age' column").
+    The results are collected and used to update the workflow state.
+
+    Args:
+        state (AgentState): The current state of the agentic workflow. It must
+                            contain the DataFrame as a JSON string in `state['df']`
+                            and a list of tasks in `state['task']`.
+        config (RunnableConfig): The configuration for the runnable, including
+                                 temperature and a sleep timer between agent calls.
+
+    Returns:
+        AgentState: The updated state object. The 'task' in the state is updated
+                    with the agent's output, and the stage is advanced.
+    """
     task_list = state['task'] if isinstance(state['task'], list) else [state['task']]
     stage = state['stage'][-1]
     temperature = config.get('metadata').get("temperature")

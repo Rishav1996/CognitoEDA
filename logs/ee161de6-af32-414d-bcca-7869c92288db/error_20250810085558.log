@@ -1,0 +1,139 @@
+Traceback (most recent call last):
+  File "E:\Workspace\CognitoEDA\src\page_section\agent_page.py", line 48, in trigger_agent_func
+    for stage_output in graph_agent.stream(state, runnable_config):
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2534, in stream
+    for _ in runner.tick(
+             ^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\runner.py", line 162, in tick
+    run_with_retry(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\retry.py", line 42, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 623, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 377, in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\src\tools\agents.py", line 47, in llm_agent
+    content = llm_agent_obj.invoke(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2844, in invoke
+    for chunk in self.stream(
+                 ^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2534, in stream
+    for _ in runner.tick(
+             ^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\runner.py", line 162, in tick
+    run_with_retry(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\pregel\retry.py", line 42, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 623, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\utils\runnable.py", line 370, in invoke
+    ret = context.run(self.func, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langgraph\prebuilt\chat_agent_executor.py", line 507, in call_model
+    response = cast(AIMessage, model_runnable.invoke(state, config))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 3046, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\runnables\base.py", line 5434, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 1334, in invoke
+    return super().invoke(input, config, stop=stop, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 378, in invoke
+    self.generate_prompt(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 963, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 782, in generate
+    self._generate_with_cache(
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1028, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 1441, in _generate
+    response: GenerateContentResponse = _chat_with_retry(
+                                        ^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 231, in _chat_with_retry
+    return _chat_with_retry(**params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 336, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 475, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 376, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 418, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 185, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\risha\AppData\Roaming\uv\python\cpython-3.12.9-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\risha\AppData\Roaming\uv\python\cpython-3.12.9-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\tenacity\__init__.py", line 478, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 222, in _chat_with_retry
+    raise e
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\langchain_google_genai\chat_models.py", line 206, in _chat_with_retry
+    return generation_method(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 868, in generate_content
+    response = rpc(
+               ^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+           ^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+             ^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Workspace\CognitoEDA\.venv\Lib\site-packages\google\api_core\grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 250
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 2
+}
+]
+During task with name 'agent' and id '4795c4f4-a730-f5fa-70e3-d9549be57bd5'
+During task with name 'Metadata Extractor Agent' and id 'e5a4a1ff-0559-ec79-e03f-2672d96cb46b'

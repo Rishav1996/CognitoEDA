@@ -1,9 +1,3 @@
-"""
-This module defines the tools available for the LangChain agents.
-It includes tools for academic research (arXiv), web searches (DuckDuckGo),
-and a Python REPL for code execution with a DataFrame context.
-"""
-
 from langchain_community.agent_toolkits.load_tools import load_tools
 from langchain_community.tools import DuckDuckGoSearchResults
 

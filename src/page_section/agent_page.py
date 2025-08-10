@@ -1,16 +1,30 @@
+import os
+import traceback
+import uuid
+from copy import copy
+from datetime import datetime
+
+import pandas as pd
 import streamlit as st
+
 from graph import create_graph
 from tools.helper import AgentState, ConfigSchema, NodeName, WorkflowStage
 from utils.helper import ModelClasses
-import os
-import traceback
-from datetime import datetime
-from copy import copy
-import uuid
-import pandas as pd
 
 
 def trigger_agent_func():
+    """
+    Triggers the agentic workflow as a generator function.
+
+    This function orchestrates the execution of a sequence of agents defined in a graph.
+    It first checks if the configuration has been saved. It then initializes the agent state
+    and streams through the agent graph, executing each agent in sequence.
+
+    Yields:
+        str: The name of the agent stage that has just completed.
+             Yields "CONFIG_NOT_SAVED" if the configuration is not saved.
+             Yields "ERROR" if an exception occurs during the agent run.
+    """
     if st.session_state["configuration"]["uuid"] is None:
         yield "CONFIG_NOT_SAVED"
     if os.path.exists(f'./logs/{st.session_state["configuration"]["uuid"]}') is False:
@@ -46,6 +60,14 @@ def trigger_agent_func():
 
 
 def save_config_func():
+    """
+    Saves the current agent and data configuration to disk.
+
+    A unique UUID is generated for the run and a corresponding directory is created
+    under './logs/'. The configuration from `st.session_state` is saved as 'config.json',
+    and the uploaded dataset is saved as 'data.csv' inside this directory.
+    A success toast message is displayed upon completion.
+    """
     st.session_state["configuration"]["uuid"] = str(uuid.uuid4())
     if not os.path.exists(f'./logs/{st.session_state["configuration"]["uuid"]}'):
         os.mkdir(f'./logs/{st.session_state["configuration"]["uuid"]}')
@@ -58,6 +80,16 @@ def save_config_func():
 
 
 def show():
+    """
+    Displays the main "Agentic Workflow" page in the Streamlit application.
+
+    This function sets up the user interface for configuring the agent and the dataset,
+    triggering the agentic workflow, and monitoring its progress. It includes
+    input fields for agent parameters, a file uploader for the dataset, and
+    select boxes for problem type and target column. It also manages the
+    execution of the agent in the background and displays real-time status updates,
+    finally providing a download link for the generated HTML report.
+    """
     st.set_page_config(layout="wide")
     st.title("Agentic Workflow")
 
@@ -70,9 +102,9 @@ def show():
                 st.session_state["configuration"]["agent_sleep_seconds"] = st.number_input("Agent Sleep Seconds",
                                                                                             min_value=10,
                                                                                             step=10,
-                                                                                            value=st.session_state["configuration"]["agent_sleep_seconds"])
+                                                                                            value=30)
             with col2:
-                st.session_state["configuration"]["temperature"] = st.number_input("Temperature", min_value=0.0, max_value=1.0, step=0.1, value=st.session_state["configuration"]["temperature"])
+                st.session_state["configuration"]["temperature"] = st.number_input("Temperature", min_value=0.0, max_value=1.0, step=0.1)
 
         with data_config_col:
             st.text("Dataset Configuration")
@@ -112,7 +144,8 @@ def show():
                             if msg == 'CONFIG_NOT_SAVED':
                                 raise Exception("CONFIG_NOT_SAVED")
                             time_taken = str((datetime.now() - lapsed_time).seconds)
-                            st.write(f"""**✅ Success!**]\n\n**{msg}** completed successfully.\nTime taken: **{time_taken} seconds**.""")
+                            st.write(f"""**Agent:** `{msg}`\n\n**Status:** Completed\n\n**Time:** {time_taken} seconds""")
+                            st.divider()
                             lapsed_time = datetime.now()
                             st.session_state['configuration']['stages'].append(msg)
                             total_time += int(time_taken)

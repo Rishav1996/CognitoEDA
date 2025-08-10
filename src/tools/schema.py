@@ -1,6 +1,8 @@
 from typing import List
-from pydantic import BaseModel, Field
+
 from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel, Field
+
 from tools.helper import WorkflowStage
 
 class MetadataExtractorOutputFormatSchema(BaseModel):
@@ -40,30 +42,30 @@ class HTMLInsightOutputFormatSchema(BaseModel):
     )
 
 
-"""Parser for the Metadata Extractor Agent's output."""
 metadata_parser = PydanticOutputParser(
     pydantic_object=MetadataExtractorOutputFormatSchema,
 )
+"""Parser for the Metadata Extractor Agent's output."""
 
-"""Parser for the Structured File Generator Agent's output."""
 structured_file_parser = PydanticOutputParser(
     pydantic_object=StructuredFileOutputFormatSchema
 )
+"""Parser for the Structured File Generator Agent's output."""
 
-"""Parser for the Statistics Extractor Agent's output."""
 statistics_parser = PydanticOutputParser(
     pydantic_object=StatisticsExtractorOutputFormatSchema
 )
+"""Parser for the Statistics Extractor Agent's output."""
 
-"""Parser for the Business Analytics Agent's output."""
 business_analytics_parser = PydanticOutputParser(
     pydantic_object=BusinessAnalyticsOutputFormatSchema
 )
+"""Parser for the Business Analytics Agent's output."""
 
-"""Parser for the HTML Insight Generator Agent's output."""
 html_insight_parser = PydanticOutputParser(
     pydantic_object=HTMLInsightOutputFormatSchema
 )
+"""Parser for the HTML Insight Generator Agent's output."""
 
 
 FORMAT_MAPPER = {
@@ -73,6 +75,7 @@ FORMAT_MAPPER = {
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: BusinessAnalyticsOutputFormatSchema,
     WorkflowStage.WEB_DEVELOPER_AGENT: HTMLInsightOutputFormatSchema
 }
+"""A dictionary mapping each workflow stage to its corresponding Pydantic output schema."""
 
 
 PARSER_MAPPER = {
@@ -82,3 +85,4 @@ PARSER_MAPPER = {
     WorkflowStage.BUSINESS_INSIGHTS_AGENT: business_analytics_parser,
     WorkflowStage.WEB_DEVELOPER_AGENT: html_insight_parser
 }
+"""A dictionary mapping each workflow stage to its corresponding output parser."""

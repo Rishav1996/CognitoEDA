@@ -1,6 +1,8 @@
-from tools.schema import *
-from tools.helper import WorkflowStage, AgentState
 from langchain_core.prompts import PromptTemplate
+
+from tools.helper import AgentState, WorkflowStage
+from tools.schema import PARSER_MAPPER
+from tools.helper import WorkflowStage, AgentState
 from tools.support_tools import common_tools
 
 
@@ -80,7 +82,19 @@ PROMPT_MAPPER = {
 
 def get_prompt(state: AgentState):
     """
-    Get the prompt for the agent based on the current state.
+    Dynamically generates a prompt for the current agent based on the workflow state.
+
+    This function selects the appropriate prompt template from `PROMPT_MAPPER` based on
+    the current `stage` in the `AgentState`. It then formats the template with
+    relevant information from the state, such as the task, metadata, statistics,
+    and insights, along with the parser instructions and a list of available tools.
+
+    Args:
+        state (AgentState): The current state of the agentic workflow, containing all
+                            necessary context for generating the prompt.
+
+    Returns:
+        str: A fully formatted prompt string ready to be sent to the language model.
     """
     task = state['task']
     stage = state['stage'][-1]
@@ -119,5 +133,3 @@ def get_prompt(state: AgentState):
             metadata=metadata,
             statistics=statistics
         )
-
-

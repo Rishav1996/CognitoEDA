@@ -12,6 +12,8 @@
   Dynamically executes EDA queries on your data using a secure, sandboxed Python environment.
 - **Structured Reporting:**  
   Converts EDA results into a human-friendly, structured document.
+- **Interactive UI:**
+  A Streamlit application provides a user-friendly interface for uploading data, running the EDA process, and viewing the results.
 - **Extensible Workflow:**  
   Modular design for easy extension with new agents, prompts, or data sources.
 
@@ -26,17 +28,22 @@ CognitoEDA/
 │   ├── app.py             # Main Streamlit application
 │   ├── graph.py           # Core agentic workflow logic
 │   ├── page_section/      # Streamlit pages for the UI
+│   │   ├── __init__.py
 │   │   ├── agent_page.py
 │   │   ├── history_page.py
 │   │   └── intro_page.py
+│   ├── static/
+│   │   └── graph.png
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   ├── agents.py      # Agent definitions
 │   │   ├── helper.py      # Helper functions
 │   │   ├── prompt.py      # Prompt templates
 │   │   ├── schema.py      # Pydantic schemas
-│   │   └── tools.py       # Custom tools for agents
+│   │   └── support_tools.py # Custom tools for agents
 │   └── utils/             # Utility scripts
+│       ├── __init__.py
+│       └── helper.py
 │
 ├── .gitignore
 ├── pyproject.toml
@@ -49,16 +56,24 @@ CognitoEDA/
 
 ## ⚙️ How It Works
 
-1. **Metadata Extraction:**  
-   The workflow starts by prompting an LLM agent to suggest EDA steps based on the dataset and use case (e.g., classification).
-2. **Query Execution:**  
-   Each suggested EDA step is executed on the DataFrame using a Pandas agent, and the results are collected.
-3. **Structured Output:**  
-   The question-answer pairs are converted into a readable report using another LLM agent, following a structured template.
-4. **Statistics Extraction:**  
-   Additional statistical steps are generated and executed, with results saved in a structured format.
-5. **Business Insights & HTML Generation:**  
-   Business insights are generated from metadata/statistics, and then converted into interactive HTML reports.
+The application follows an agentic workflow orchestrated by LangGraph. The process is initiated and visualized in a Streamlit web interface.
+
+1.  **User Interaction (Streamlit UI):**
+    -   The user uploads a CSV file and specifies the target column and problem type (e.g., classification, regression).
+    -   The main application is in `src/app.py`, which routes the UI to different pages defined in `src/page_section/`.
+
+2.  **Agentic Workflow (`src/graph.py`):**
+    -   The core logic is defined in `src/graph.py` as a state machine.
+    -   **Metadata Extractor Agent:**  Analyzes the dataset's schema and proposes initial EDA steps.
+    -   **Python Pandas Coder Agent:** Executes the EDA steps using Pandas and captures the results.
+    -   **Structure Creator Agent:**  Organizes the EDA results into a structured format.
+    -   **Statistics Generator Agent:**  Generates further statistical analysis questions.
+    -   **Python Statistics Coder Agent:** Executes the statistical queries.
+    -   **Business Insights Agent:**  Generates business insights from the collected data.
+    -   **Web Developer Agent:**  Creates an HTML report summarizing the findings.
+
+3.  **MLflow Integration:**
+    -   The application is integrated with MLflow for experiment tracking and logging of agent runs.
 
 ---
 
@@ -80,12 +95,17 @@ CognitoEDA/
    uv add -r requirements.txt
    ```
 
-3. **Run the application:**  
+3. **Run the MLflow server:**
+   ```bash
+   uv run mlflow server
+   ```
+
+4. **Run the application:**  
    ```bash
    uv run streamlit run ./src/app.py
    ```
 
-4. **Access the application:**  
+5. **Access the application:**  
    Open your web browser and navigate to the URL provided by Streamlit (usually `http://127.0.0.1:8501`).
 
 ---
@@ -105,11 +125,13 @@ CognitoEDA/
 - [Pandas](https://pandas.pydata.org/)
 - [Pydantic](https://docs.pydantic.dev/)
 - [MLflow](https://mlflow.org/)
+- [Streamlit](https://docs.streamlit.io/)
+- [Streamlit Option Menu](https://pypi.org/project/streamlit-option-menu/)
 - [pytest](https://docs.pytest.org/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
-- [arxiv](https://pypi.org/project/arxiv/)
+- [arxiv](https.pypi.org/project/arxiv/)
 - [duckduckgo-search](https://pypi.org/project/duckduckgo-search/)
-- [streamlit](https://docs.streamlit.io/)
+
 
 ---
 
@@ -129,7 +151,7 @@ The Pandas agent executes code in a Python REPL.
 - **Agents:**  
   Extend or modify agent logic in `src/tools/agents.py`.
 - **Tools:**  
-  Add or modify agent tools in `src/tools/tools.py`.
+  Add or modify agent tools in `src/tools/support_tools.py`.
 
 ---
 

@@ -1,7 +1,8 @@
 from enum import Enum
-from typing_extensions import TypedDict
+
 from langchain.chat_models import init_chat_model
 from langgraph.graph import END
+from typing_extensions import TypedDict
 
 
 class WorkflowStage(Enum):
@@ -61,17 +62,39 @@ WORKFLOW_SEQUENCE = [
 
 def get_model(temperature: float = 1.0):
     """
-    Get the model for the agent.
+    Initializes and returns a chat model instance from a specified provider.
+
+    This function configures and provides an LLM instance, specifically a
+    Google GenAI model, with a given temperature setting.
+
+    Args:
+        temperature (float, optional): The temperature for the model's sampling,
+                                       controlling randomness. Defaults to 1.0.
+
+    Returns:
+        An initialized chat model instance.
     """
     return init_chat_model(
-        model="models/gemini-2.5-flash",
+        model="models/gemini-2.5-pro",
         model_provider="google_genai",
         temperature=temperature
     )
 
 def get_next_stage_mapper(history_stage: list[WorkflowStage]) -> WorkflowStage:
     """
-    Get the next state for the agent.
+    Determines the next workflow stage based on the history of completed stages.
+
+    It compares the sequence of stages in `history_stage` against the predefined
+    `WORKFLOW_SEQUENCE` to find the next stage to be executed. If the entire
+    workflow has been completed, it returns the `END` marker.
+
+    Args:
+        history_stage (list[WorkflowStage]): A list of workflow stages that have
+                                             already been executed.
+
+    Returns:
+        WorkflowStage | object: The next `WorkflowStage` enum member to execute, or
+                                `END` if the sequence is complete.
     """
     for index in range(len(WORKFLOW_SEQUENCE)):
         if ''.join(map(str, WORKFLOW_SEQUENCE[:index])) == ''.join(map(str, history_stage)):

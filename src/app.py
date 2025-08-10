@@ -1,7 +1,8 @@
+import pandas as pd
 import streamlit as st
 from streamlit_option_menu import option_menu
+
 from graph import set_mlflow
-import pandas as pd
 from page_section import agent_page, history_page, intro_page
 
 st.set_page_config(

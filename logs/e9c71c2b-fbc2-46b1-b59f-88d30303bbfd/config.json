@@ -1,1 +1,0 @@
-{'agent_sleep_seconds': 30, 'temperature': 1.0, 'problem_type': 'Classification', 'target_column': 'Outcome', 'uuid': 'e9c71c2b-fbc2-46b1-b59f-88d30303bbfd', 'stages': [], 'status': 'Initiating Agent .....', 'background_task': None}
