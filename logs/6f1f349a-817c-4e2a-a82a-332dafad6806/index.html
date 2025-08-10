@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Risk Factors Analysis</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #0056b3; margin-top: 25px; margin-bottom: 15px; }
+        h1 { font-size: 2.5em; text-align: center; color: #003366; }
+        h2 { font-size: 1.8em; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        h3 { font-size: 1.4em; color: #337ab7; }
+        .insight-section { margin-bottom: 40px; padding: 20px; border: 1px solid #d0e7ff; border-radius: 8px; background-color: #f7fcff; }
+        .key-factors-list { list-style: none; padding: 0; margin-top: 15px; }
+        .key-factors-list li { background-color: #e9f7ff; margin-bottom: 10px; padding: 12px 15px; border-left: 6px solid #007bff; border-radius: 5px; font-size: 0.95em; }
+        .key-factors-list li strong { color: #0056b3; }
+        .chart-container { background-color: #ffffff; padding: 25px; border-radius: 10px; margin-top: 30px; border: 1px dashed #a0d3ff; text-align: center; }
+        .chart-placeholder { color: #888; font-style: italic; margin-top: 15px; font-size: 0.9em; }
+        .interactive-element { margin-top: 25px; padding: 20px; background-color: #e6ffe6; border: 1px solid #4CAF50; border-radius: 8px; text-align: center; }
+        .interactive-element label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
+        .interactive-element input[type="range"] { width: 80%; margin: 0 auto 15px; }
+        .interactive-element div { margin-bottom: 15px; }
+        #riskIndicator { font-size: 1.5em; font-weight: bold; margin-top: 20px; padding: 10px; border-radius: 5px; display: inline-block; min-width: 150px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Understanding Diabetes Risk Factors</h1>
+
+        <div class="insight-section">
+            <h2>Prioritized Risk Factor Identification for Targeted Interventions</h2>
+            <p>Our analysis clearly identifies <strong>Glucose, BMI, Age, and Pregnancies</strong> as the most significant and consistently impactful predictors of diabetes. These factors show strong statistical differences between diabetic and non-diabetic groups and robust correlations with diabetes presence, making them primary drivers of diabetes risk.</p>
+            <h3>Key Factors:</h3>
+            <ul class="key-factors-list">
+                <li><strong>Glucose:</strong> p-value 1.2e-39, correlation 0.4758 (highly significant)</li>
+                <li><strong>BMI:</strong> p-value 9.7e-18, correlation 0.3097 (highly significant)</li>
+                <li><strong>Age:</strong> p-value 1.1e-17, correlation 0.3090 (highly significant)</li>
+                <li><strong>Pregnancies:</strong> p-value 3.7e-08, correlation 0.1987 (highly significant)</li>
+            </ul>
+            <div class="chart-container">
+                <h3>Visualizing Primary Risk Factors Impact</h3>
+                <p class="chart-placeholder">[Placeholder for an interactive Bar Chart or Radar Chart showcasing the impact/correlation of Glucose, BMI, Age, and Pregnancies on diabetes risk. A visualization library like Chart.js or D3.js would be used here.]</p>
+                <div class="interactive-element">
+                    <h4>Explore Your Illustrative Risk Score</h4>
+                    <p>Adjust the sliders below to see a simplified, illustrative risk indication based on these key factors. This is not a diagnostic tool.</p>
+                    <div>
+                        <label for="glucose">Glucose Level (mg/dL):</label>
+                        <input type="range" id="glucose" min="50" max="200" value="100"> <span id="glucoseValue">100</span>
+                    </div>
+                    <div>
+                        <label for="bmi">BMI (kg/m²):</label>
+                        <input type="range" id="bmi" min="15" max="50" value="25" step="0.1"> <span id="bmiValue">25.0</span>
+                    </div>
+                    <div>
+                        <label for="age">Age (Years):</label>
+                        <input type="range" id="age" min="20" max="80" value="30"> <span id="ageValue">30</span>
+                    </div>
+                    <div>
+                        <label for="pregnancies">Number of Pregnancies:</label>
+                        <input type="range" id="pregnancies" min="0" max="17" value="0"> <span id="pregnanciesValue">0</span>
+                    </div>
+                    <div id="riskIndicator" style="background-color: #f0ad4e; color: white;">Risk Level: Moderate</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-section">
+            <h2>Strategic Focus on Genetic and Familial Risk Assessment</h2>
+            <p>The <strong>'DiabetesPedigreeFunction'</strong> feature consistently emerges as a significant predictor, highlighting the crucial role of genetic predisposition and family history in diabetes susceptibility. Understanding this allows for more personalized and preventative health strategies.</p>
+            <h3>Key Factors:</h3>
+            <ul class="key-factors-list">
+                <li><strong>DiabetesPedigreeFunction:</strong> Statistically significant p-values across tests (Mann-Whitney U: 1.19e-06, Logistic Regression: 3.70e-06, Kolmogorov-Smirnov: 6.84e-05) and moderate Spearman correlation (0.1754).</li>
+            </ul>
+            <div class="chart-container">
+                <h3>Genetic Influence on Diabetes Risk</h3>
+                <p class="chart-placeholder">[Placeholder for a Gauge Chart or an infographic visually representing the impact of 'DiabetesPedigreeFunction' as a significant genetic/familial risk factor.]</p>
+            </div>
+        </div>
+
+        <div class="insight-section">
+            <h2>Differentiated Approach for Ancillary Risk Factors: Insulin and Blood Pressure</h2>
+            <p>While most features are strong individual predictors, <strong>'Insulin' and especially 'BloodPressure'</strong> show a more nuanced or less direct individual predictive relationship with diabetes outcome. Insulin's role appears complex, significant in some models but not all. BloodPressure consistently acts as a weaker individual predictor, suggesting it might be more of a co-morbidity indicator or part of a broader metabolic syndrome, rather than a primary singular driver of diabetes onset for screening.</p>
+            <h3>Key Factors:</h3>
+            <ul class="key-factors-list">
+                <li><strong>Insulin:</strong> Mann-Whitney U p-value (0.065 - above 0.05 threshold), Logistic Regression p-value (0.0004 - significant), Spearman correlation (0.0665 - weak).</li>
+                <li><strong>BloodPressure:</strong> Logistic Regression p-value (00.073 - not statistically significant at alpha=0.05), Spearman correlation (0.1429 - relatively weak), despite significant Mann-Whitney U and KS-test results suggesting distributional differences.</li>
+            </ul>
+            <div class="chart-container">
+                <h3>Comparative Analysis: Insulin & Blood Pressure</h3>
+                <p class="chart-placeholder">[Placeholder for a dual Bar Chart or a detailed comparison table illustrating the varying p-values and correlations across different statistical tests for Insulin and BloodPressure, highlighting their nuanced roles.]</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const glucoseSlider = document.getElementById('glucose');
+        const bmiSlider = document.getElementById('bmi');
+        const ageSlider = document.getElementById('age');
+        const pregnanciesSlider = document.getElementById('pregnancies');
+
+        const glucoseValueSpan = document.getElementById('glucoseValue');
+        const bmiValueSpan = document.getElementById('bmiValue');
+        const ageValueSpan = document.getElementById('ageValue');
+        const pregnanciesValueSpan = document.getElementById('pregnanciesValue');
+
+        const riskIndicator = document.getElementById('riskIndicator');
+
+        function updateRisk() {
+            const glucose = parseInt(glucoseSlider.value);
+            const bmi = parseFloat(bmiSlider.value);
+            const age = parseInt(ageSlider.value);
+            const pregnancies = parseInt(pregnanciesSlider.value);
+
+            glucoseValueSpan.textContent = glucose;
+            bmiValueSpan.textContent = bmi.toFixed(1);
+            ageValueSpan.textContent = age;
+            pregnanciesValueSpan.textContent = pregnancies;
+
+            // Simplified illustrative risk calculation based on insights:
+            // Glucose, BMI, Age, Pregnancies are primary drivers.
+            let riskScore = 0;
+
+            // Glucose impact
+            if (glucose > 140) riskScore += 5;
+            else if (glucose > 120) riskScore += 3;
+            else if (glucose > 100) riskScore += 1;
+
+            // BMI impact
+            if (bmi >= 30) riskScore += 4; // Obese
+            else if (bmi >= 25) riskScore += 2; // Overweight
+
+            // Age impact
+            if (age >= 50) riskScore += 3;
+            else if (age >= 40) riskScore += 2;
+            else if (age >= 30) riskScore += 1;
+
+            // Pregnancies impact (higher number, slightly higher risk)
+            if (pregnancies >= 3) riskScore += 2;
+            else if (pregnancies >= 1) riskScore += 1;
+
+            let riskLevel = "Low";
+            let riskColor = "#5cb85c"; // Green
+            let textColor = "white";
+
+            if (riskScore >= 9) {
+                riskLevel = "High";
+                riskColor = "#d9534f"; // Red
+            } else if (riskScore >= 5) {
+                riskLevel = "Moderate";
+                riskColor = "#f0ad4e"; // Orange
+            }
+
+            riskIndicator.textContent = `Risk Level: ${riskLevel}`;
+            riskIndicator.style.backgroundColor = riskColor;
+            riskIndicator.style.color = textColor;
+        }
+
+        // Event Listeners
+        glucoseSlider.addEventListener('input', updateRisk);
+        bmiSlider.addEventListener('input', updateRisk);
+        ageSlider.addEventListener('input', updateRisk);
+        pregnanciesSlider.addEventListener('input', updateRisk);
+
+        // Initial update on page load
+        updateRisk();
+    </script>
+</body>
+</html>

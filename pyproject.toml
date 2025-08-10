@@ -1,0 +1,32 @@
+[project]
+name = "cognitoeda"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=5.5.0",
+    "arxiv>=2.2.0",
+    "ddgs>=9.3.1",
+    "duckduckgo-search>=8.1.1",
+    "google-genai>=1.26.0",
+    "langchain-core>=0.3.69",
+    "langchain-experimental>=0.3.4",
+    "langchain[google-genai]>=0.3.26",
+    "langgraph>=0.5.3",
+    "langgraph-cli[inmem]>=0.3.5",
+    "mlflow>=3.0.0rc0",
+    "numpy>=1.26.4",
+    "pandas>=2.2.2",
+    "plotly>=6.2.0",
+    "pytest>=8.4.1",
+    "python-dotenv>=1.0.1",
+    "scikit-learn>=1.7.1",
+    "scipy>=1.16.0",
+    "seaborn>=0.13.2",
+    "setuptools>=80.9.0",
+    "statsmodels>=0.14.5",
+    "streamlit>=1.48.0",
+    "streamlit-option-menu>=0.4.0",
+    "tabulate>=0.9.0",
+]

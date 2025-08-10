@@ -1,0 +1,1 @@
+{'agent_sleep_seconds': 30, 'temperature': 1.0, 'problem_type': 'Classification', 'target_column': 'Pregnancies', 'uuid': '12a7fa23-b1f6-49d4-8ffd-abbfc0bd6b65', 'stages': [], 'status': 'Initiating Agent .....', 'background_task': None}

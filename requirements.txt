@@ -1,0 +1,37 @@
+# Core LangChain and LangGraph dependencies
+langchain[google-genai]
+langchain-experimental
+langchain-core
+langgraph
+langgraph-cli[inmem]
+
+# Google GenAI integration
+google-genai
+
+# Data science and visualization
+pandas
+numpy
+scikit-learn
+scipy
+statsmodels
+seaborn
+plotly
+altair
+tabulate
+
+# Experiment tracking and workflow
+mlflow>=3.0.0rc0
+
+# Environment and testing
+python-dotenv
+pytest
+setuptools
+
+# Information retrieval
+arxiv
+ddgs
+duckduckgo-search
+
+# UI and workflow tools
+streamlit
+streamlit-option-menu

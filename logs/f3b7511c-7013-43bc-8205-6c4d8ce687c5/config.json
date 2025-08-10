@@ -1,0 +1,1 @@
+{'agent_sleep_seconds': 30, 'temperature': 0.0, 'problem_type': 'Regression', 'target_column': 'Spending Score (1-100)', 'uuid': 'f3b7511c-7013-43bc-8205-6c4d8ce687c5', 'stages': [], 'status': 'Initiating Agent .....', 'background_task': None}

@@ -1,0 +1,135 @@
+from langchain_core.prompts import PromptTemplate
+
+from tools.helper import AgentState, WorkflowStage
+from tools.schema import PARSER_MAPPER
+from tools.helper import WorkflowStage, AgentState
+from tools.support_tools import common_tools
+
+
+"""Prompt for the Metadata Extractor Agent."""
+METADATA_EXTRACTOR_PROMPT = PromptTemplate(
+    input_variables=["output_format"],
+    template=(
+        "ROLE : You are a proficient Data Analyst\n"
+        "TOOLS : {tool_list}\n"
+        "GOAL: Write small steps of operations to extract metadata of the dataset\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
+
+"""Prompt for the Structured File Generator Agent."""
+STRUCTURED_FILE_PROMPT = PromptTemplate(
+    input_variables=["content", "output_format"],
+    template=(
+        "ROLE : You are a seasoned Software Engineer, adept at crafting easily understandable documentation.\n"
+        "GOAL : Your task is to devise a markdown structure representation based on the given dictionary.\n"
+        "CONTENT : {content}\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
+
+"""Prompt for the Statistics Extractor Agent."""
+STATISTICS_EXTRACTOR_PROMPT = PromptTemplate(
+    input_variables=["output_format"],
+    template=(
+        "ROLE : You are a seasoned Data Scientist\n"
+        "METADATA : {metadata}\n"
+        "GOAL : Your mission is to write quick and small analysis steps for deriving diverse statistical insights from the provided metadata.\n"
+        "Investigate novel statistical methodologies and approaches for data analysis, leveraging the aforementioned tools.\n"
+        "Focus exclusively on statistical details, specifically employing libraries such as scipy and statsmodels.\n"
+        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
+
+"""Prompt for the Business Analytics Agent."""
+BUSINESS_ANALYTICS_PROMPT = PromptTemplate(
+    input_variables=["output_format"],
+    template=(
+        "ROLE : You function as a seasoned Business Strategist.\n"
+        "GOAL : Your aim is to derive strategic business revelations from the supplied metadata and quantitative data.\n"
+        "Concentrate exclusively on strategic business implications. Envision yourself executing strategic analysis procedures.\n"
+        "EXCLUDE : Visual representations, metadata acquisition, and data ingestion.\n"
+        "METADATA : {metadata}\n"
+        "STATISTICS : {statistics}\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
+
+"""Prompt for the HTML Insight Generator Agent."""
+HTML_INSIGHT_GENERATOR_PROMPT = PromptTemplate(
+    input_variables=["output_format"],
+    template=(
+        "ROLE : You are a seasoned Web Developer\n"
+        "GOAL :  Your mission is to develop Interactive Web content based on the provided business insights.\n"
+        "Focus solely on Interactive Web content creation. Envision yourself executing Web operations.\n"
+        "INSIGHTS : {insights}\n"
+        "METADATA : {metadata}\n"
+        "STATISTICS : {statistics}\n"
+        "OUTPUT FORMAT : {output_format}"
+    ),
+)
+
+
+PROMPT_MAPPER = {
+    WorkflowStage.METADATA_EXTRACTOR_AGENT: METADATA_EXTRACTOR_PROMPT,
+    WorkflowStage.STRUCTURE_CREATOR_AGENT: STRUCTURED_FILE_PROMPT,
+    WorkflowStage.STATISTICS_GENERATOR_AGENT: STATISTICS_EXTRACTOR_PROMPT,
+    WorkflowStage.BUSINESS_INSIGHTS_AGENT: BUSINESS_ANALYTICS_PROMPT,
+    WorkflowStage.WEB_DEVELOPER_AGENT: HTML_INSIGHT_GENERATOR_PROMPT
+}
+
+
+def get_prompt(state: AgentState):
+    """
+    Dynamically generates a prompt for the current agent based on the workflow state.
+
+    This function selects the appropriate prompt template from `PROMPT_MAPPER` based on
+    the current `stage` in the `AgentState`. It then formats the template with
+    relevant information from the state, such as the task, metadata, statistics,
+    and insights, along with the parser instructions and a list of available tools.
+
+    Args:
+        state (AgentState): The current state of the agentic workflow, containing all
+                            necessary context for generating the prompt.
+
+    Returns:
+        str: A fully formatted prompt string ready to be sent to the language model.
+    """
+    task = state['task']
+    stage = state['stage'][-1]
+    metadata = state['metadata'] if state['metadata'] else {}
+    insights = state['insights'] if state['insights'] else {}
+    statistics = state['statistics'] if state['statistics'] else {}
+
+    if stage == WorkflowStage.METADATA_EXTRACTOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools)
+        )
+    elif stage == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            content=task
+        )
+    elif stage == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            metadata=metadata
+        )
+    elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            metadata=metadata,
+            statistics=statistics
+        )
+    elif stage == WorkflowStage.WEB_DEVELOPER_AGENT:
+        return PROMPT_MAPPER[stage].format(
+            output_format=PARSER_MAPPER[stage].get_format_instructions(),
+            tool_list=", ".join(tool.name for tool in common_tools),
+            insights=insights,
+            metadata=metadata,
+            statistics=statistics
+        )
