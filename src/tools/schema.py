@@ -1,3 +1,4 @@
+"""Schema Structure"""
 from typing import List
 
 from langchain_core.output_parsers import PydanticOutputParser

@@ -1,3 +1,4 @@
+"""Support Tools"""
 from langchain_community.agent_toolkits.load_tools import load_tools
 from langchain_community.tools import DuckDuckGoSearchResults
 
