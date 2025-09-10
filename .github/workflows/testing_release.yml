@@ -2,9 +2,12 @@ name: Testing Release
 
 on: 
   pull_request:
-    types: [ closed ]
+    types: [ opened ]
   push:
     branches: [ master ]
+
+permissions:
+  contents: write # This is the line you need to add
 
 jobs:
   pylint_check:
