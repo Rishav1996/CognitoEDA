@@ -1,8 +1,8 @@
+"""Prompt Structure"""
 from langchain_core.prompts import PromptTemplate
 
 from tools.helper import AgentState, WorkflowStage
 from tools.schema import PARSER_MAPPER
-from tools.helper import WorkflowStage, AgentState
 from tools.support_tools import common_tools
 
 
@@ -107,25 +107,25 @@ def get_prompt(state: AgentState):
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools)
         )
-    elif stage == WorkflowStage.STRUCTURE_CREATOR_AGENT:
+    if stage == WorkflowStage.STRUCTURE_CREATOR_AGENT:
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             content=task
         )
-    elif stage == WorkflowStage.STATISTICS_GENERATOR_AGENT:
+    if stage == WorkflowStage.STATISTICS_GENERATOR_AGENT:
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools),
             metadata=metadata
         )
-    elif stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
+    if stage == WorkflowStage.BUSINESS_INSIGHTS_AGENT:
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools),
             metadata=metadata,
             statistics=statistics
         )
-    elif stage == WorkflowStage.WEB_DEVELOPER_AGENT:
+    if stage == WorkflowStage.WEB_DEVELOPER_AGENT:
         return PROMPT_MAPPER[stage].format(
             output_format=PARSER_MAPPER[stage].get_format_instructions(),
             tool_list=", ".join(tool.name for tool in common_tools),

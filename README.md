@@ -1,5 +1,11 @@
 # 🚀 CognitoEDA
 
+[![Pylint](https://github.com/Rishav1996/CognitoEDA/actions/workflows/testing_release.yml/badge.svg)](https://github.com/Rishav1996/CognitoEDA/actions/workflows/testing_release.yml)
+[![GitHub release](https://img.shields.io/github/release/Rishav1996/CognitoEDA.svg)](https://github.com/Rishav1996/CognitoEDA/releases)
+[![GitHub branches](https://badgen.net/github/branches/Rishav1996/CognitoEDA)](https://github.com/Rishav1996/CognitoEDA/)
+[![GitHub commits](https://badgen.net/github/commits/Rishav1996/CognitoEDA)](https://github.com/Rishav1996/CognitoEDA/commit/)
+[![GitHub latest commit](https://badgen.net/github/last-commit/Rishav1996/CognitoEDA)](https://gitHub.com/Rishav1996/CognitoEDA/commit/)
+
 **CognitoEDA** is an agentic workflow for automated Exploratory Data Analysis (EDA) using Large Language Models (LLMs) and Pandas. The project leverages LangChain, LangGraph, and Google Gemini models to extract metadata, generate EDA queries, and produce human-readable structured reports from tabular data.
 
 ---

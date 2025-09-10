@@ -1,3 +1,4 @@
+"""Agents Dashboard"""
 import os
 import traceback
 import uuid
@@ -48,7 +49,7 @@ def trigger_agent_func():
         for stage_output in graph_agent.stream(state, runnable_config):
             agent_name = list(stage_output.keys())[0]
             if agent_name == NodeName.WEB_DEVELOPER_AGENT.value:
-                with open('./logs/' + st.session_state['configuration']['uuid'] + f'/index.html', 'w') as f:
+                with open('./logs/' + st.session_state['configuration']['uuid'] + '/index.html', 'w') as f:
                     f.write(str(stage_output[NodeName.WEB_DEVELOPER_AGENT.value]['task'][0]))
             with open('./logs/' + st.session_state['configuration']['uuid'] + f'/{agent_name}-' + datetime.now().strftime("%Y%m%d%H%M%S") + '.log', 'w') as f:
                 f.write(str(stage_output).replace('\n', '\\n'))
@@ -76,7 +77,7 @@ def save_config_func():
     with open(f'./logs/{st.session_state["configuration"]["uuid"]}/config.json', 'w') as f:
         f.write(str(config))
     data_table.to_csv(f'./logs/{st.session_state["configuration"]["uuid"]}/data.csv', index=False)
-    st.toast(f"Config & Data saved successfully")
+    st.toast("Config & Data saved successfully")
 
 
 def show():

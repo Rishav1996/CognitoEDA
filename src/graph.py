@@ -1,10 +1,9 @@
+"""Graph Agent Starting Point"""
 import mlflow
-
+from langgraph.graph import StateGraph
 from dotenv import load_dotenv
 
 load_dotenv()
-
-from langgraph.graph import StateGraph
 
 from tools.agents import llm_agent, pandas_agent
 from tools.helper import AgentState, ConfigSchema, NodeName

@@ -1,3 +1,4 @@
+"""Helper Functions"""
 from enum import Enum
 
 from langchain.chat_models import init_chat_model
@@ -96,7 +97,7 @@ def get_next_stage_mapper(history_stage: list[WorkflowStage]) -> WorkflowStage:
         WorkflowStage | object: The next `WorkflowStage` enum member to execute, or
                                 `END` if the sequence is complete.
     """
-    for index in range(len(WORKFLOW_SEQUENCE)):
+    for index, _ in enumerate(WORKFLOW_SEQUENCE):
         if ''.join(map(str, WORKFLOW_SEQUENCE[:index])) == ''.join(map(str, history_stage)):
             return WORKFLOW_SEQUENCE[index]
     return END
