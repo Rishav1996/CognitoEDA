@@ -1,8 +1,6 @@
 name: Create Release
 
 on: 
-  pull_request:
-    types: [ closed ]
   push:
     branches: [ master ]
 
@@ -15,13 +13,30 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Get latest tag
+      id: get_tag
+      run: |
+        git fetch --tags
+        # Get latest tag, default to 0.0.0 if none exists
+        TAG=$(git tag --sort=-v:refname | head -n 1)
+        if [ -z "$TAG" ]; then
+          TAG="0.0.0"
+        fi
+        echo "Latest tag: $TAG"
+        # Bump patch version
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$TAG"
+        PATCH=$((PATCH + 1))
+        NEW_TAG="$MAJOR.$MINOR.$PATCH"
+        echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: 0.0.1
-        release_name: Release V0.0.1
+        tag_name: ${{ steps.get_tag.outputs.new_tag }}
+        release_name: Release V${{ steps.get_tag.outputs.new_tag }}
         draft: false
         prerelease: false
