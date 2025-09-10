@@ -1,6 +1,5 @@
 # 🚀 CognitoEDA
 
-[![Pylint](https://github.com/Rishav1996/CognitoEDA/actions/workflows/testing_release.yml/badge.svg)](https://github.com/Rishav1996/CognitoEDA/actions/workflows/testing_release.yml)
 [![GitHub release](https://img.shields.io/github/release/Rishav1996/CognitoEDA.svg)](https://github.com/Rishav1996/CognitoEDA/releases)
 [![GitHub branches](https://badgen.net/github/branches/Rishav1996/CognitoEDA)](https://github.com/Rishav1996/CognitoEDA/)
 [![GitHub commits](https://badgen.net/github/commits/Rishav1996/CognitoEDA)](https://github.com/Rishav1996/CognitoEDA/commit/)
