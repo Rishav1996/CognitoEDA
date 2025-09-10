@@ -1,0 +1,44 @@
+name: Testing Release
+
+on: 
+  pull_request:
+    types: [ closed ]
+  push:
+    branches: [ master ]
+
+jobs:
+  pylint_check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+        pip install -r requirements.txt
+    - name: Analysing the code with pylint
+      run: |
+        pylint */*.py --recursive=y --fail-under 9 --fail-on E
+  git_release:
+    needs: pylint_check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: 3.1.1
+        release_name: Release V3.1.1
+        draft: false
+        prerelease: false
